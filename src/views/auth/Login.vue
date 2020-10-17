@@ -6,19 +6,24 @@
                     LOGIN
                 </div>
                 <div class="card-body">
-                    <form>
+                    <form @submit.prevent="login">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                            <input v-model="usuario" type="email" class="form-control" id="email" aria-describedby="emailHelp">
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password">
+                            <input v-model="password" type="password" class="form-control" id="password">
                         </div>
                         <button type="submit" class="btn btn-primary">Sign in</button>
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="col-md-7">
+            <pre>
+                {{ $data }}
+            </pre>
         </div>
     </section>
 </template>
@@ -31,12 +36,34 @@ export default {
 
     data(){
         return{
-
+            usuario: '',
+            password: '',
         }
     },
 
     methods: {
-          
+        async login(){
+            try{
+                let response = await auth.signInWithEmailAndPassword(this.usuario, this.password)
+
+                if (response) {
+                    this.$router.replace('/dashboard')
+                }
+                
+            }
+            catch(error){
+                console.log(error)
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                        console.log('Revisa tu email y contraseña')
+                        break;
+                    default:
+                        console.log('Ocurrio un error al validar la informacion')
+                        break;
+                }
+            }
+        }
     },
 }
 </script>

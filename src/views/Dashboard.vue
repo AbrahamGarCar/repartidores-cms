@@ -5,8 +5,26 @@
 </template>
 
 <script>
-export default {
+import { mapState } from 'vuex'
 
+export default {
+    name: 'Dashboard',
+
+    data(){
+        return{
+
+        }
+    },
+
+    computed: {
+        ...mapState([
+            'user'
+        ])
+    },
+
+    methods: {
+        
+    },
 }
 </script>
 
