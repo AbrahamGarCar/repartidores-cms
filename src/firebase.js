@@ -27,7 +27,7 @@ const storage = firebase.storage()
 const functions = firebase.functions()
 
 export {
-	firebase
+	firebase,
 	auth,
 	db,
 	storage,
