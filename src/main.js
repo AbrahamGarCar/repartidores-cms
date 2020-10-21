@@ -4,7 +4,14 @@ import router from './router'
 import store from './store'
 import { auth } from '@/firebase'
 
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
+
+import { GooglePlacesAutocomplete } from 'vue-better-google-places-autocomplete'
+ Vue.component('google-places-autocomplete', GooglePlacesAutocomplete)
+
 Vue.config.productionTip = false
+
 
 auth.onAuthStateChanged((user) => {
     if (user) {

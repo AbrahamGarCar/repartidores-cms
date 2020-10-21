@@ -28,6 +28,18 @@ export default new Vuex.Store({
 
                 if (document.exists) {
                     let user = document.data()
+
+                    // if (user.restaurant) {
+                    //     let restaurant = await db.collection('restaurants').doc(user.restaurant).get()
+                    //     if (restaurant.exists) {
+                    //         Object.defineProperty(user, 'restaurantObject', {
+                    //             enumerable: true,
+                    //             configurable: true,
+                    //             writable: true,
+                    //             value: 'static'
+                    //         });
+                    //     }
+                    // }
                     commit('updateUser', user)
                 }
 
