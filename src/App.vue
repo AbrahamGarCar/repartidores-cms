@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" style="background-color: #F0F2F5;">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="#">Repartidores CMS</a>
@@ -26,7 +26,7 @@
             </div>
         </nav>
         
-        <section class="container">
+        <section class="container pb-5">
             <router-view/>
         </section>
     </div>

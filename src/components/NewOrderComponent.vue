@@ -15,7 +15,7 @@
 
 <template>
     <section>
-        <button class="btn btn-success" @click="newOrderFormat">Nuevo pedido</button>
+        <button class="btn btn-success" @click="newOrderFormat">Nueva orden</button>
 
         <div class="modal fade" id="newOrderFormat" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="newOrderFormatLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -72,7 +72,6 @@
                     </div>
                 </div>
 
-                <button @click="getAlgolia">Binnie</button>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" :disabled="$v.$invalid" @click="saveOrder">Guardar</button>
@@ -93,10 +92,10 @@ import { firebase, db, firestore } from '@/firebase'
 //Vuelidate
 import { required, minLength, between } from 'vuelidate/lib/validators'
 
-// For the default version
+//Algolia
 const algoliasearch = require('algoliasearch');
 
-const client = algoliasearch('YN419Q56L7', 'edf8f9a3011445793f03c30eb44f69ad');
+const client = new algoliasearch('YN419Q56L7', 'edf8f9a3011445793f03c30eb44f69ad');
 const index = client.initIndex('users');
 
 export default {
@@ -117,6 +116,7 @@ export default {
                 },
                 status: 'PENDIENTE',
                 idRestaurant: '',
+                level: 1,
             },
 
             place: null,
@@ -162,14 +162,16 @@ export default {
         },
 
         getAlgolia(){
-            index.search(this.service, {
-                    aroundLatLng: `${this.restaurant.position.__}, ${this.ubication.longitude}`,
-                    aroundRadius: 1000, // 1km = 1000
+            console.log(this.restaurant.position.__)
+            console.log(this.restaurant.position.l_)
+
+            index.search('Usuario', {
+                    aroundLatLng: `${this.restaurant.position.l_}, ${this.restaurant.position.__}`,
+                    aroundRadius: 1, // 1km = 1000
                     filters: `available=1`,
-                }, (content, err) => {
-                    console.log(content.hits);
-                    this.results = content.hits
-                });
+                }).then(({ hits }) => {
+                    console.log(hits);
+                })
         },
 
         async saveOrder(){
