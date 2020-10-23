@@ -7,8 +7,10 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "algoliasearch": "^4.5.1",
     "core-js": "^3.6.5",
     "firebase": "^7.22.1",
+    "geofirestore": "^4.3.0",
     "vue": "^2.6.11",
     "vue-better-google-places-autocomplete": "^1.1.0",
     "vue-place-autocomplete": "^0.5.3",

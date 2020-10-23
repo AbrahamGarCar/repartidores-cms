@@ -50,11 +50,13 @@
                                         >
                                     </div>
                                 </google-places-autocomplete>
+                                <small class="text-danger" v-if="!$v.place.required">Campo requerido</small>
                             </div>
-                            <div class="col-md-12 mt-2">
+                            <div class="col-md-12 mt-3">
                                 <div class="form-group">
                                     <label for="name">Nombre</label>
                                     <input name="name" v-model="order.details.name" class="form-control" type="text">
+                                    <small class="text-danger" v-if="!$v.order.details.name.required">Campo requerido</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="telephone">Telefono</label>
@@ -69,9 +71,11 @@
                         </div>
                     </div>
                 </div>
+
+                <button @click="getAlgolia">Binnie</button>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" @click="saveOrder">Guardar</button>
+                    <button type="button" class="btn btn-primary" :disabled="$v.$invalid" @click="saveOrder">Guardar</button>
                 </div>
                 </div>
             </div>
@@ -89,6 +93,12 @@ import { firebase, db, firestore } from '@/firebase'
 //Vuelidate
 import { required, minLength, between } from 'vuelidate/lib/validators'
 
+// For the default version
+const algoliasearch = require('algoliasearch');
+
+const client = algoliasearch('YN419Q56L7', 'edf8f9a3011445793f03c30eb44f69ad');
+const index = client.initIndex('users');
+
 export default {
     name: 'NewOrderComponent',
 
@@ -98,7 +108,7 @@ export default {
         return{
 
             order: {
-                directiondestination: '',
+                directionDestination: '',
                 destination: null,
                 details: {
                     name: '',
@@ -114,9 +124,16 @@ export default {
     },
 
     validations: {
-        name: {
-            required,
-            minLength: minLength(4)
+        place: {
+            required
+        },
+        order: {
+            details: {
+                name: {
+                    required,
+                }
+            }
+            
         },
     },
 
@@ -133,7 +150,7 @@ export default {
     watch: {
         place(){
             if (this.place != null) {
-                this.order.directiondestination = this.place.formatted_address
+                this.order.directionDestination = this.place.formatted_address
                 this.order.destination = new firebase.firestore.GeoPoint(this.place.geometry.location.lat(), this.place.geometry.location.lng())
             }    
         }
@@ -142,6 +159,17 @@ export default {
     methods: {
         newOrderFormat(){
             $('#newOrderFormat').modal('show')
+        },
+
+        getAlgolia(){
+            index.search(this.service, {
+                    aroundLatLng: `${this.restaurant.position.__}, ${this.ubication.longitude}`,
+                    aroundRadius: 1000, // 1km = 1000
+                    filters: `available=1`,
+                }, (content, err) => {
+                    console.log(content.hits);
+                    this.results = content.hits
+                });
         },
 
         async saveOrder(){
