@@ -13,6 +13,7 @@
     "geofirestore": "^4.3.0",
     "luxon": "^1.25.0",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.31",
     "vue": "^2.6.11",
     "vue-better-google-places-autocomplete": "^1.1.0",
     "vue-place-autocomplete": "^0.5.3",

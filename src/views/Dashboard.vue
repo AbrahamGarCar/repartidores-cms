@@ -143,7 +143,8 @@
 import { mapState } from 'vuex'
 
 //Moment
-const moment = require('moment');
+// const moment = require('moment');
+const moment = require('moment-timezone');
 
 //Luxon
 const { DateTime } = require("luxon");
@@ -182,12 +183,11 @@ export default {
 
     filters: {
         alarm(args){
-            moment.locale('es')
-            let today = moment(new Date).format();
-            let date = moment(args.toDate()).format();
-            let differ = moment(today).diff(date, 'hours');
+            moment.locale('es-mx')
+            let today = DateTime.local();
+            let date = moment(args.toDate()).calendar();
             
-            return differ
+            return date; 
             // return today
         }
     },
