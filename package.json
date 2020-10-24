@@ -7,10 +7,18 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "algoliasearch": "^4.5.1",
     "core-js": "^3.6.5",
     "firebase": "^7.22.1",
+    "geofirestore": "^4.3.0",
+    "luxon": "^1.25.0",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.31",
     "vue": "^2.6.11",
+    "vue-better-google-places-autocomplete": "^1.1.0",
+    "vue-place-autocomplete": "^0.5.3",
     "vue-router": "^3.2.0",
+    "vuelidate": "^0.7.5",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
@@ -18,6 +26,8 @@
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^10.0.3",
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
