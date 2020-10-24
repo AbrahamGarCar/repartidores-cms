@@ -42,6 +42,22 @@
 
         <div class="row mt-4">
             <div class="col-md-12 mt-2">
+                <h3 style="font-weight: bold;">Ordenes aceptadas</h3>
+            </div>
+            <div class="col-md-4" v-for="(item, index) in aceptedOrders" :key="index">
+                <div class="card p-2" style="background-color: #4E54BF; color: white;">
+                    <div class="card-body">
+                        <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
+                        <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
+                        <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
+                    </div>
+                    <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12 mt-2">
                 <h3 style="font-weight: bold;">Ordenes en curso</h3>
             </div>
             <div class="col-md-4" v-for="(item, index) in ordersInProgress" :key="index">
@@ -201,6 +217,10 @@ export default {
             return this.orders.filter(doc => doc.status == 'PENDIENTE')
         },
 
+        aceptedOrders(){
+            return this.orders.filter(doc => doc.status == 'ACEPTADA')
+        },
+
         ordersInProgress(){
             return this.orders.filter(doc => doc.status == 'EN CURSO')
         }
@@ -236,9 +256,13 @@ export default {
 
         async releaseNotifications(){
             try {
+                let list = this.deliveryManList.map(item => {
+                    return item.uid
+                })
+
                 let response = await db.collection('orders')
                                         .doc(this.order.id)
-                                        .update({ level: 2, timer: new Date() })
+                                        .update({ level: 2, timer: new Date(), listDeliveryMen: list })
 
                 $('#deliveryManlist').modal('hide')
 
@@ -298,7 +322,7 @@ export default {
 
             index.search('Usuario', {
                     aroundLatLng: `${this.restaurant.position.l_}, ${this.restaurant.position.__}`,
-                    aroundRadius: 10000, // 1km = 1000
+                    aroundRadius: 90000, // 1km = 1000
                     filters: `available=1`,
                 }).then(({ hits }) => {
                     console.log(hits);

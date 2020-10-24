@@ -189,6 +189,15 @@ export default {
 
                     if (response) {
                         alert('Orden agregada')
+                        
+                        this.order.directionDestination = ''
+                        this.order.destination = null
+                        this.order.details.name = ''
+                        this.order.details.telephone = ''
+                        this.order.details.reference = ''
+
+                        this.place = null
+                        $('#newOrderFormat').modal('show')
                     }
                 }
             } catch (error) {
