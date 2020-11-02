@@ -266,6 +266,48 @@ export default {
 
                 $('#deliveryManlist').modal('hide')
 
+                this.getUsersNotification(list)
+
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async getUsersNotification(list){
+            try {
+                let arrayUsers = []
+                let response = await db.collection('users')
+                                        .where('uid', 'in', list)
+                                        .get()
+                                        .then(query => {
+                                            query.forEach(doc => {
+                                                arrayUsers.push(doc.data())
+                                            })
+                                        })
+
+                console.log(arrayUsers)
+
+                this.createNotifications(arrayUsers)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async createNotifications(users){
+            try {
+                let notificationCollection = db.collection('notifications')
+
+                // Begin a new batch
+                let batch = db.batch()
+
+                // Set each document, as part of the batch
+                users.forEach(document => {
+                    let ref = notificationCollection.doc(document.token);
+                    batch.set(ref, { title: 'Nueva orden', content: 'Hay una nueva orden disponible' })
+                })
+
+                // Commit the entire batch
+                return batch.commit();
             } catch (error) {
                 console.log(error)
             }
