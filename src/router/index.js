@@ -36,13 +36,31 @@ const router = new VueRouter({
       meta: {
         auth: true,
       }
+    },
+
+    {
+      path: '/adduser',
+      name: 'AddUser',
+      component: () => import(/* webpackChunkName: "about" */ '../views/AddUser.vue'),
+      meta: {
+        auth: true,
+      }
+    },
+
+    {
+      path: '/addrestaurant',
+      name: 'AddRestaurant',
+      component: () => import(/* webpackChunkName: "about" */ '../views/AddRestaurant.vue'),
+      meta: {
+        auth: true,
+      }
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   let user = auth.currentUser
-  console.log(user)
+  //console.log(user)
   let autorization = to.matched.some(record => record.meta.auth)
 
   if (autorization && !user) {

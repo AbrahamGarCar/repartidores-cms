@@ -44,7 +44,7 @@ export default {
     methods: {
         async login(){
             try{
-                let response = await auth.signInWithEmailAndPassword(this.usuario, this.password)
+                let response = await auth.createUserWithEmailAndPassword(this.usuario, this.password)
 
                 if (response) {
                     this.$router.replace('/dashboard')
