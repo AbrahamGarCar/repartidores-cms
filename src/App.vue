@@ -14,10 +14,12 @@
                         <router-link class="nav-link" to="/register">Register</router-link>
                     </div>
                     <div v-else class="navbar-nav ml-auto">
+                        <router-link class="nav-link" to="/adduser">Users</router-link>
+                        <router-link class="nav-link" to="/addrestaurant">Restaurant</router-link>
                         <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
                         <div class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ user.name }}
+                                {{ user.email }}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                                 <button class="dropdown-item" type="button" @click="logOut">Sign Out</button>
@@ -46,7 +48,7 @@ export default {
 
     data(){
         return{
-
+            user: {}
         }
     },
 
@@ -61,6 +63,25 @@ export default {
     },
 
     methods: {
+        Status(){
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    // User is signed in.
+                    var displayName = user.displayName;
+                    var email = user.email;
+                    var emailVerified = user.emailVerified;
+                    var photoURL = user.photoURL;
+                    var isAnonymous = user.isAnonymous;
+                    var uid = user.uid;
+                    var providerData = user.providerData;
+                    // ...
+                } else {
+                    // User is signed out.
+                    // ...
+                }
+                });
+        },
+
         logOut(){
             auth.signOut().then(() => this.$router.replace('login'))
             
