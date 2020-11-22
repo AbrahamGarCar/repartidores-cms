@@ -92,6 +92,12 @@ import { firebase, db, firestore } from '@/firebase'
 //Vuelidate
 import { required, minLength, between } from 'vuelidate/lib/validators'
 
+//haversine
+const haversine = require('haversine')
+
+//Axios
+const axios = require('axios')
+
 //Algolia
 const algoliasearch = require('algoliasearch');
 
@@ -118,6 +124,8 @@ export default {
                 idRestaurant: '',
                 level: 1,
             },
+
+            APIKEY: 'AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas',
 
             place: null,
         }
@@ -174,9 +182,39 @@ export default {
                 })
         },
 
-        async saveOrder(){
-            try {
+        async getDistance(start, end) {
+            
+            const service = new google.maps.DistanceMatrixService();
 
+            service.getDistanceMatrix({
+                origins: [start],
+                destinations: [end],
+                travelMode: 'DRIVING',
+                unitSystem: google.maps.UnitSystem.METRIC,
+                avoidHighways: false,
+                avoidTolls: false
+            },
+            (response, status) => {
+                if (status !== "OK") {
+                    alert("Error was: " + status);
+                } else {
+                    // console.log(Math.round((response.rows[0].elements[0].distance.value)/1000));
+
+                    let infoDestination = {
+                        distance: response.rows[0].elements[0].distance.text,
+                        duration: response.rows[0].elements[0].duration.text,
+                        value: Math.round((response.rows[0].elements[0].distance.value)/1000)
+                    }
+
+                    this.insertOrder(infoDestination)
+                }
+            })
+
+
+        },
+
+        async insertOrder(infoDestination){
+            try {
                 let conf = confirm('¿Quieres guardar esta orden?')
 
                 if (conf) {
@@ -184,6 +222,7 @@ export default {
                     this.order.directionOrigin = this.restaurant.direction
                     this.order.origin = this.restaurant.position
                     this.order.name = this.restaurant.name
+                    this.order.infoDestination = infoDestination
 
                     let response = await db.collection('orders').add(this.order)
 
@@ -200,6 +239,26 @@ export default {
                         $('#newOrderFormat').modal('show')
                     }
                 }
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async saveOrder(){
+            try {
+
+                const start = {
+                    lat: this.restaurant.position.l_,
+                    lng: this.restaurant.position.__
+                }
+
+                const end = {
+                    lat: this.order.destination.l_,
+                    lng: this.order.destination.__
+                }
+
+                this.getDistance(start, end)
+
             } catch (error) {
                 console.log(error)
             }

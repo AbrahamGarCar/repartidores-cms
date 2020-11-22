@@ -26,7 +26,36 @@
             <div class="col-md-12 mt-2">
                 <h3 style="font-weight: bold;">Ordenes pendientes</h3>
             </div>
-            <div class="col-md-4" v-for="(item, index) in pendingOrders" :key="index">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Cliente</th>
+                            <th scope="col">Direccion</th>
+                            <th scope="col">Distancia</th>
+                            <th scope="col">Tiempo</th>
+                            <th scope="col">Costo</th>
+                            <th scope="col">Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in pendingOrders" :key="index">
+                            <th scope="row">{{ index }}</th>
+                            <td>{{ item.details.name }}</td>
+                            <td>{{ item.directionDestination }}</td>
+                            <td>{{ item.infoDestination.distance }}</td>
+                            <td>{{ item.infoDestination.duration }}</td>
+                            <td>$30.00</td>
+                            <td>
+                                <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
+                                <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">Buscando</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="col-md-4" v-for="(item, index) in pendingOrders" :key="index">
                 <div class="card p-2" :class="[ item.level == 1 ? 'level_1' : 'level_2' ]">
                     <div class="card-body">
                         <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
@@ -37,7 +66,7 @@
                     <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
                     <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">{{ item.timer | alarm }}</button>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="row mt-4">
@@ -56,7 +85,7 @@
             </div>
         </div>
 
-        <div class="row mt-4">
+        <!-- <div class="row mt-4">
             <div class="col-md-12 mt-2">
                 <h3 style="font-weight: bold;">Ordenes en curso</h3>
             </div>
@@ -70,7 +99,7 @@
                     <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!--Lista de repartidores-->
         <div class="modal fade" id="deliveryManlist" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deliveryManlistLabel" aria-hidden="true">

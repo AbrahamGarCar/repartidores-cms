@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "algoliasearch": "^4.5.1",
+    "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "firebase": "^7.22.1",
     "geofirestore": "^4.3.0",
+    "haversine": "^1.1.1",
     "luxon": "^1.25.0",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
