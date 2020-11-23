@@ -15,168 +15,206 @@
 </style>
 
 <template>
-    <section>
-        <div class="row mt-4">
-            <div class="col-md-12 card p-2">
-                <NewOrder :restaurant="restaurant" />
+    <section class="row">
+        <div class="col-md-12">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <NewOrder :restaurant="restaurant" />
+                </div>
             </div>
-        </div>
 
-        <div class="row mt-5">
-            <div class="col-md-12 mt-2">
-                <h3 style="font-weight: bold;">Ordenes pendientes</h3>
-            </div>
-            <div class="col-md-12">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Cliente</th>
-                            <th scope="col">Direccion</th>
-                            <th scope="col">Distancia</th>
-                            <th scope="col">Tiempo</th>
-                            <th scope="col">Costo</th>
-                            <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in pendingOrders" :key="index">
-                            <th scope="row">{{ index }}</th>
-                            <td>{{ item.details.name }}</td>
-                            <td>{{ item.directionDestination }}</td>
-                            <td>{{ item.infoDestination.distance }}</td>
-                            <td>{{ item.infoDestination.duration }}</td>
-                            <td>$30.00</td>
-                            <td>
-                                <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
-                                <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">Buscando</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- <div class="col-md-4" v-for="(item, index) in pendingOrders" :key="index">
-                <div class="card p-2" :class="[ item.level == 1 ? 'level_1' : 'level_2' ]">
-                    <div class="card-body">
-                        <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
-                        <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
-                        <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
+            <div class="row mt-5">
+                <div class="col-md-12 mt-2">
+                    <h3 style="font-weight: bold;">Ordenes pendientes</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Cliente</th>
+                                        <th scope="col">Direccion</th>
+                                        <th scope="col">Distancia</th>
+                                        <th scope="col">Tiempo</th>
+                                        <th scope="col">Costo</th>
+                                        <th scope="col">Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, index) in pendingOrders" :key="index">
+                                        <th scope="row">{{ index }}</th>
+                                        <td>{{ item.details.name }}</td>
+                                        <td>{{ item.directionDestination }}</td>
+                                        <td>{{ item.infoDestination.distance }}</td>
+                                        <td>{{ item.infoDestination.duration }}</td>
+                                        <td>$30.00</td>
+                                        <td>
+                                            <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
+                                            <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">Buscando</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+                <!-- <div class="col-md-4" v-for="(item, index) in pendingOrders" :key="index">
+                    <div class="card p-2" :class="[ item.level == 1 ? 'level_1' : 'level_2' ]">
+                        <div class="card-body">
+                            <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
+                            <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
+                            <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
+                        </div>
 
-                    <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
-                    <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">{{ item.timer | alarm }}</button>
+                        <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
+                        <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">{{ item.timer | alarm }}</button>
+                    </div>
+                </div> -->
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12 mt-2">
+                    <h3 style="font-weight: bold;">Ordenes aceptadas</h3>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Cliente</th>
+                                        <th scope="col">Direccion</th>
+                                        <th scope="col">Distancia</th>
+                                        <th scope="col">Tiempo</th>
+                                        <th scope="col">Costo</th>
+                                        <th scope="col">Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, index) in aceptedOrders" :key="index">
+                                        <th scope="row">{{ index }}</th>
+                                        <td>{{ item.details.name }}</td>
+                                        <td>{{ item.directionDestination }}</td>
+                                        <td>{{ item.infoDestination.distance }}</td>
+                                        <td>{{ item.infoDestination.duration }}</td>
+                                        <td>$30.00</td>
+                                        <td>
+                                            <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-4" v-for="(item, index) in aceptedOrders" :key="index">
+                    <div class="card p-2" style="background-color: #4E54BF; color: white;">
+                        <div class="card-body">
+                            <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
+                            <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
+                            <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
+                        </div>
+                        <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
+                    </div>
+                </div> -->
+            </div>
+
+            <!-- <div class="row mt-4">
+                <div class="col-md-12 mt-2">
+                    <h3 style="font-weight: bold;">Ordenes en curso</h3>
+                </div>
+                <div class="col-md-4" v-for="(item, index) in ordersInProgress" :key="index">
+                    <div class="card p-2" style="background-color: #4E54BF; color: white;">
+                        <div class="card-body">
+                            <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
+                            <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
+                            <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
+                        </div>
+                        <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
+                    </div>
                 </div>
             </div> -->
-        </div>
 
-        <div class="row mt-4">
-            <div class="col-md-12 mt-2">
-                <h3 style="font-weight: bold;">Ordenes aceptadas</h3>
-            </div>
-            <div class="col-md-4" v-for="(item, index) in aceptedOrders" :key="index">
-                <div class="card p-2" style="background-color: #4E54BF; color: white;">
-                    <div class="card-body">
-                        <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
-                        <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
-                        <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
+            <!--Lista de repartidores-->
+            <div class="modal fade" id="deliveryManlist" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deliveryManlistLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deliveryManlistLabel">Repartidores</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container" v-if="deliveryMans != null">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">options</th>
+                                                    <th scope="col">Nombre</th>
+                                                    <th scope="col">Telefono</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(item, index) in deliveryMans" :key="index">
+                                                    <th scope="row">
+                                                        <input type="checkbox" :value="item" v-model="deliveryManList">
+                                                    </th>
+                                                    <td>
+                                                        {{ item.name }}
+                                                    </td>
+                                                    <td>
+                                                        {{ item.telephone }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" @click="releaseNotifications">Notificar</button>
+                        </div>
                     </div>
-                    <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
                 </div>
             </div>
-        </div>
-
-        <!-- <div class="row mt-4">
-            <div class="col-md-12 mt-2">
-                <h3 style="font-weight: bold;">Ordenes en curso</h3>
-            </div>
-            <div class="col-md-4" v-for="(item, index) in ordersInProgress" :key="index">
-                <div class="card p-2" style="background-color: #4E54BF; color: white;">
-                    <div class="card-body">
-                        <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
-                        <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
-                        <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
-                    </div>
-                    <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
-                </div>
-            </div>
-        </div> -->
-
-        <!--Lista de repartidores-->
-        <div class="modal fade" id="deliveryManlist" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deliveryManlistLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+            <!--Info de repartidor-->
+            <div class="modal fade" id="deliveryMan" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deliveryManLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="deliveryManlistLabel">Repartidores</h5>
+                        <h5 class="modal-title" id="deliveryManLabel">Repartidor</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="container" v-if="deliveryMans != null">
+                        <div class="container" v-if="deliveryMan != null">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">options</th>
-                                                <th scope="col">Nombre</th>
-                                                <th scope="col">Telefono</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(item, index) in deliveryMans" :key="index">
-                                                <th scope="row">
-                                                    <input type="checkbox" :value="item" v-model="deliveryManList">
-                                                </th>
-                                                <td>
-                                                    {{ item.name }}
-                                                </td>
-                                                <td>
-                                                    {{ item.telephone }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <h5>Nombre</h5>
+                                    <p>{{ deliveryMan.name }}</p>
+                                    
+                                    <h5>Email</h5>
+                                    <p>{{ deliveryMan.email }}</p>
+
+                                    <h5>Telefono</h5>
+                                    <p>{{ deliveryMan.telephone }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" @click="releaseNotifications">Notificar</button>
                     </div>
-                </div>
-            </div>
-        </div>
-        <!--Info de repartidor-->
-        <div class="modal fade" id="deliveryMan" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deliveryManLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deliveryManLabel">Repartidor</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container" v-if="deliveryMan != null">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h5>Nombre</h5>
-                                <p>{{ deliveryMan.name }}</p>
-                                
-                                <h5>Email</h5>
-                                <p>{{ deliveryMan.email }}</p>
-
-                                <h5>Telefono</h5>
-                                <p>{{ deliveryMan.telephone }}</p>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                </div>
                 </div>
             </div>
         </div>
@@ -256,7 +294,7 @@ export default {
     },
 
     created() {
-        // this.getOrders()
+        this.getRestaurant()
     },
 
     watch: {

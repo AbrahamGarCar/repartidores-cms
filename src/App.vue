@@ -10,19 +10,20 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div v-if="user == null" class="navbar-nav ml-auto">
-                        <router-link class="nav-link" to="/">Login</router-link>
-                        <router-link class="nav-link" to="/register">Register</router-link>
+                        <router-link class="nav-link" to="/">Iniciar sesion</router-link>
+                        <router-link class="nav-link" to="/register">Registrarse</router-link>
                     </div>
                     <div v-else class="navbar-nav ml-auto">
-                        <router-link class="nav-link" to="/adduser">Users</router-link>
-                        <router-link class="nav-link" to="/addrestaurant">Restaurant</router-link>
+                        <router-link class="nav-link" to="/admin/users">Administrador</router-link>
                         <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
                         <div class="nav-item dropdown">
+                            
                             <a class="nav-link dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ user.email }}
+                                {{ user.name }}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <button class="dropdown-item" type="button" @click="logOut">Sign Out</button>
+                                <router-link class="dropdown-item" to="#">Perfil</router-link>
+                                <button class="dropdown-item" type="button" @click="logOut">Salir</button>
                             </div>
                         </div>
                     </div>
@@ -30,7 +31,7 @@
             </div>
         </nav>
         
-        <section class="container pb-5">
+        <section class="container-fluid pb-5">
             <router-view/>
         </section>
     </div>
@@ -48,7 +49,7 @@ export default {
 
     data(){
         return{
-            user: {}
+            // user: {}
         }
     },
 

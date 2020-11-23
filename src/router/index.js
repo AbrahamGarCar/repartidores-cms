@@ -38,23 +38,17 @@ const router = new VueRouter({
       }
     },
 
-    {
-      path: '/adduser',
-      name: 'AddUser',
-      component: () => import(/* webpackChunkName: "about" */ '../views/AddUser.vue'),
+    { 
+      path: '/admin', 
+      component: () => import(/* webpackChunkName: "about" */ '../views/admin/Index.vue'),
       meta: {
         auth: true,
-      }
+      },
+      children: [ 
+          { path: 'users', component: () => import(/* webpackChunkName: "about" */ '../views/admin/users/Index.vue')}, 
+          { path: 'restaurants', component: () => import(/* webpackChunkName: "about" */ '../views/admin/restaurants/Index.vue')}, 
+      ] 
     },
-
-    {
-      path: '/addrestaurant',
-      name: 'AddRestaurant',
-      component: () => import(/* webpackChunkName: "about" */ '../views/AddRestaurant.vue'),
-      meta: {
-        auth: true,
-      }
-    }
   ]
 })
 

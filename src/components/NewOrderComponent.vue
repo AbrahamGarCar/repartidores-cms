@@ -15,7 +15,11 @@
 
 <template>
     <section>
-        <button class="btn btn-success" @click="newOrderFormat">Nueva orden</button>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-success" @click="newOrderFormat">Nueva orden</button>
+            </div>
+        </div>
 
         <div class="modal fade" id="newOrderFormat" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="newOrderFormatLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
