@@ -29,7 +29,7 @@
 
         <div class="row mt-2">
             <div class="col-md-12">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-responsive">
                     <thead class="thead-dark">
                         <tr>
                         <th scope="col">Nombre</th>

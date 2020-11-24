@@ -19,7 +19,7 @@
         
         <div class="row mt-2">
             <div class="col-md-12">
-                <table class="table table-bordered">
+                <table class="table table-bordered table-responsive">
                     <thead class="thead-dark">
                         <tr>
                         <th scope="col">Nombre</th>
@@ -45,7 +45,7 @@
                             <button v-if="item.role == 'restaurant'" v-on:click="formEditUser(item)" class="ml-1 btn btn-success btn-sm" data-toggle="modal" data-target="#restaurantModal">
                                 <i class="fas fa-store-alt"></i>
                             </button>
-                            <button v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm" data-toggle="modal" data-target="#editModal">
+                            <button v-if="item.role == 'Usuario'" v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm" data-toggle="modal" data-target="#pricingModal">
                                 <i class="fas fa-money-bill-alt"></i>
                             </button>
 
@@ -196,7 +196,74 @@
                 </div>
             </div>
         </div>
-       
+
+        <!-- Modal pagos -->
+        <div class="modal fade" id="pricingModal" tabindex="-1" role="dialog" aria-labelledby="pricingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pricingModalLabel">Elegir plan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" v-if="editUser != null">
+                        <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                            <h1 class="display-4">Suscripción</h1>
+                            <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Architecto obcaecati quam vel sit, aliquam, amet culpa cupiditate laudantium consequatur explicabo, doloribus repellat? Debitis fuga, architecto ratione eveniet nobis sit repellat.</p>
+                        </div>
+                        <div class="container">
+                            <div class="card-deck mb-3 text-center">
+                                <div class="card mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Basico</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>3 Meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$597 en total</small></li>
+                                            
+                                        </ul>
+                                        <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
+                                    </div>
+                                </div>
+                                <div class="card mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Normal</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>6 Meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$1194 en total</small></li>
+                                            
+                                        </ul>
+                                        <button @click="activatePlan(6)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                    </div>
+                                </div>
+                                <div class="card mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Plus</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>12 meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$2388 en total</small></li>
+                                        </ul>
+                                        <button @click="activatePlan(12)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
             
     </section>
 </template>
@@ -217,6 +284,12 @@ const algoliasearch = require('algoliasearch');
 const client = new algoliasearch('YN419Q56L7', 'edf8f9a3011445793f03c30eb44f69ad');
 const index = client.initIndex('users');
 
+//Luxon
+const { DateTime } = require("luxon");
+
+//Moment
+const moment = require('moment-timezone');
+
 export default {
     name: 'Users',
 
@@ -235,6 +308,10 @@ export default {
                 completeProfile: false,
                 terms: false,
                 registerDate: new Date(),
+                plus: false,
+                planActivate: new Date(),
+                planDeactivate: new Date(),
+
             },
 
             editUser: null,
@@ -263,6 +340,23 @@ export default {
     },
 
     methods:{
+        async activatePlan(plan){
+            try {
+                let date1 = moment().format();
+                let date2 = moment(date1).add(plan, 'months').calendar();;
+                console.log(new Date(date1));
+                console.log(new Date(date2));
+
+                let response = await db.collection('users').doc(this.editUser.uid).update({ planActivate: new Date(date1), planDeactivate: new Date(date2), plus: true, activate: true })
+                this.editUser.activate = true
+
+
+                alert('actualizado')
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
         async changeStatus(user){
             try {
                 console.log(user);
