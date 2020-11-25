@@ -19,13 +19,14 @@
         
         <div class="row mt-2">
             <div class="col-md-12">
-                <table class="table table-bordered table-responsive">
+                <table class="table table-bordered table-responsive" style="width: 100%;">
                     <thead class="thead-dark">
                         <tr>
                         <th scope="col">Nombre</th>
                         <th scope="col">Apellido</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Estatus</th>
+                        <th scope="col">Plus</th>
                         <th scope="col">Opciones</th>
                         </tr>
                     </thead>
@@ -37,6 +38,10 @@
                         <td class="text-center">
                             <i v-if="!item.active" style="font-size: 22px; cursor: pointer;" @click="changeStatus(item)" class="fas fa-toggle-off"></i>
                             <i v-else style="font-size: 22px; cursor: pointer;" @click="changeStatus(item)" class="fas fa-toggle-on"></i>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-pill badge-success" v-if="item.plan">OK</span>
+                            <span class="badge badge-pill badge-danger" v-else>NO</span>
                         </td>
                         <td class="text-center">
                             <button v-on:click="formEditUser(item)" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editModal">
@@ -101,7 +106,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="role">Rol</label>
-                                <select class="form-control" v-model="addUser.role" name="role" id="role" required>
+                                <select class="form-control" v-model="addUser.role" name="role" required>
                                     <option value="Usuario">Repartidor</option>
                                     <option value="restaurant">Restaurante</option>
                                 </select>
@@ -152,7 +157,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="role">Rol</label>
-                                <select class="form-control" v-model="editUser.role" name="role" id="role" required>
+                                <select class="form-control" v-model="editUser.role" name="role" required>
                                     <option value="Usuario">Repartidor</option>
                                     <option value="restaurant">Restaurante</option>
                                 </select>
@@ -213,7 +218,7 @@
                             <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Architecto obcaecati quam vel sit, aliquam, amet culpa cupiditate laudantium consequatur explicabo, doloribus repellat? Debitis fuga, architecto ratione eveniet nobis sit repellat.</p>
                         </div>
                         <div class="container">
-                            <div class="card-deck mb-3 text-center">
+                            <div v-if="editUser.plan == null" class="card-deck mb-3 text-center">
                                 <div class="card mb-4 box-shadow">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Basico</h4>
@@ -256,6 +261,53 @@
                                             <li><small>$2388 en total</small></li>
                                         </ul>
                                         <button @click="activatePlan(12)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="card-deck mb-3 text-center">
+                                <div v-if="editUser.plan == 3" class="card mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Basico</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>3 Meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$597 en total</small></li>
+                                            
+                                        </ul>
+                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                    </div>
+                                </div>
+                                <div v-if="editUser.plan == 6" class="card mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Normal</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>6 Meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$597 en total</small></li>
+                                            
+                                        </ul>
+                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                    </div>
+                                </div>
+                                <div v-if="editUser.plan == 12" class="card mb-4 box-shadow">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Plus</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>12 Meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$597 en total</small></li>
+                                            
+                                        </ul>
+                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
                                     </div>
                                 </div>
                             </div>
@@ -308,10 +360,10 @@ export default {
                 completeProfile: false,
                 terms: false,
                 registerDate: new Date(),
-                plus: false,
+
                 planActivate: new Date(),
                 planDeactivate: new Date(),
-
+                plan: null,
             },
 
             editUser: null,
@@ -347,11 +399,30 @@ export default {
                 console.log(new Date(date1));
                 console.log(new Date(date2));
 
-                let response = await db.collection('users').doc(this.editUser.uid).update({ planActivate: new Date(date1), planDeactivate: new Date(date2), plus: true, activate: true })
-                this.editUser.activate = true
+                 Swal.fire({
+                    title: '¿Quieres actualizar el plan de este usuario?',
+                    text: "Se creara un registro de pago!",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Guardar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+
+                        let response = await db.collection('users').doc(this.editUser.uid).update({ planActivate: new Date(date1), planDeactivate: new Date(date2), active: true, plan: plan })
+                        $('#pricingModal').modal('hide')
+
+                        Swal.fire(
+                        'Actualizado!',
+                        'El plan a sido actualizado',
+                        'success'
+                        )
+                    }
+                })
 
 
-                alert('actualizado')
             } catch (error) {
                 console.log(error)
             }
