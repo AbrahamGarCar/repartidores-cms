@@ -29,7 +29,7 @@
 
         <div class="row mt-2">
             <div class="col-md-12">
-                <table class="table table-bordered table-responsive">
+                <table class="table table-bordered">
                     <thead class="thead-dark">
                         <tr>
                         <th scope="col">Nombre</th>
@@ -193,96 +193,132 @@
                             <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Architecto obcaecati quam vel sit, aliquam, amet culpa cupiditate laudantium consequatur explicabo, doloribus repellat? Debitis fuga, architecto ratione eveniet nobis sit repellat.</p>
                         </div>
                         <div class="container">
-                            <div v-if="editRestaurant.plan == null"  class="card-deck mb-3 text-center">
+                            <div v-if="editRestaurant.firstTime" class="card-deck mb-3 text-center">
                                 <div class="card mb-4 box-shadow">
                                     <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Basico</h4>
+                                        <h4 class="my-0 font-weight-normal">Promocion</h4>
                                     </div>
                                     <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <h1 class="card-title pricing-card-title">$249.50 <small class="text-muted">/ mo</small></h1>
                                         <ul class="list-unstyled mt-3 mb-4">
-                                            <li>3 Meses</li>
+                                            <li>2 Meses</li>
                                             <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
+                                            <li><small>$499 en total</small></li>
                                             
                                         </ul>
-                                        <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
-                                    </div>
-                                </div>
-                                <div class="card mb-4 box-shadow">
-                                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Normal</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
-                                        <ul class="list-unstyled mt-3 mb-4">
-                                            <li>6 Meses</li>
-                                            <li>Acceso total al sistema</li>
-                                            <li><small>$1194 en total</small></li>
-                                            
-                                        </ul>
-                                        <button @click="activatePlan(6)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
-                                    </div>
-                                </div>
-                                <div class="card mb-4 box-shadow">
-                                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Plus</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
-                                        <ul class="list-unstyled mt-3 mb-4">
-                                            <li>12 meses</li>
-                                            <li>Acceso total al sistema</li>
-                                            <li><small>$2388 en total</small></li>
-                                        </ul>
-                                        <button @click="activatePlan(12)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                        <button @click="activatePlan(2)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
                                     </div>
                                 </div>
                             </div>
-                            <div v-else class="card-deck mb-3 text-center">
-                                <div v-if="editRestaurant.plan == 3" class="card mb-4 box-shadow">
-                                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Basico</h4>
+                            <div v-else>
+                                <div v-if="editRestaurant.plan == null" class="card-deck mb-3 text-center">
+                                    <div class="card mb-4 box-shadow">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">Basico</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">$499 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                                <li>1 Meses</li>
+                                                <li>Acceso total al sistema</li>
+                                                <li><small>$499 en total</small></li>
+                                                
+                                            </ul>
+                                            <button @click="activatePlan(1)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
-                                        <ul class="list-unstyled mt-3 mb-4">
-                                            <li>3 Meses</li>
-                                            <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
-                                            
-                                        </ul>
-                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                    <div class="card mb-4 box-shadow">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">Normal</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">$466.33 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                                <li>3 Meses</li>
+                                                <li>Acceso total al sistema</li>
+                                                <li><small>$1399 en total</small></li>
+                                                
+                                            </ul>
+                                            <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-4 box-shadow">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">Plus</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">$449.83 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                                <li>6 meses</li>
+                                                <li>Acceso total al sistema</li>
+                                                <li><small>$2699 en total</small></li>
+                                            </ul>
+                                            <button @click="activatePlan(6)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div v-if="editRestaurant.plan == 6" class="card mb-4 box-shadow">
-                                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Normal</h4>
+                                <div v-else class="card-deck mb-3 text-center">
+                                    <!-- Promocion -->
+                                    <div v-if="editRestaurant.plan == 2" class="card mb-4 box-shadow">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">Promocion</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">$249.50 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                                <li>2 Meses</li>
+                                                <li>Acceso total al sistema</li>
+                                                <li><small>$499 en total</small></li>
+                                                
+                                            </ul>
+                                            <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
-                                        <ul class="list-unstyled mt-3 mb-4">
-                                            <li>6 Meses</li>
-                                            <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
-                                            
-                                        </ul>
-                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                    <!-- Termina promocion -->
+                                    <div v-if="editRestaurant.plan == 1" class="card mb-4 box-shadow">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">Basico</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">$499 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                                <li>1 Meses</li>
+                                                <li>Acceso total al sistema</li>
+                                                <li><small>$499 en total</small></li>
+                                                
+                                            </ul>
+                                            <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                        </div>
                                     </div>
-                                </div>
-                                <div v-if="editRestaurant.plan == 12" class="card mb-4 box-shadow">
-                                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Plus</h4>
+                                    <div v-if="editRestaurant.plan == 3" class="card mb-4 box-shadow">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">Normal</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">$463.33 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                                <li>3 Meses</li>
+                                                <li>Acceso total al sistema</li>
+                                                <li><small>$1399 en total</small></li>
+                                                
+                                            </ul>
+                                            <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
-                                        <ul class="list-unstyled mt-3 mb-4">
-                                            <li>12 Meses</li>
-                                            <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
-                                            
-                                        </ul>
-                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                    <div v-if="editRestaurant.plan == 6" class="card mb-4 box-shadow">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">Plus</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">$449.83 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                                <li>6 Meses</li>
+                                                <li>Acceso total al sistema</li>
+                                                <li><small>$2699 en total</small></li>
+                                                
+                                            </ul>
+                                            <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -330,6 +366,8 @@ export default {
                 planActivate: new Date(),
                 planDeactivate: new Date(),
                 plan: null,
+                firstTime: true,
+                active: false,
             },
 
             place: null,
@@ -363,8 +401,8 @@ export default {
 
         async activatePlan(plan){
             try {
-                let date1 = moment().format();
-                let date2 = moment(date1).add(plan, 'months').calendar();;
+                let date1 = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
+                let date2 = moment(date1).add(plan, 'months').calendar();
                 console.log(new Date(date1));
                 console.log(new Date(date2));
 
@@ -372,7 +410,8 @@ export default {
                     planActivate: new Date(date1), 
                     planDeactivate: new Date(date2), 
                     active: true, 
-                    plan: plan
+                    plan: plan,
+                    firstTime: false,
                 }
 
                 Swal.fire({
@@ -386,8 +425,10 @@ export default {
                     cancelButtonText: 'Cancelar',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
+                        
+                        let restaurant = JSON.parse(JSON.stringify(this.editRestaurant))
 
-                        let response = await db.collection('restaurants').doc(this.editRestaurant.id).update(data)
+                        let response = await db.collection('restaurants').doc(restaurant.id).update(data)
                         $('#pricingModal').modal('hide')
 
                         Swal.fire(
@@ -396,6 +437,7 @@ export default {
                         'success'
                         )
 
+                        this.registerPayment(data, restaurant)
                         this.updateUsers(data)
                     }
                 })
@@ -428,6 +470,40 @@ export default {
                                         })
             } catch (error) {
                 console.log(error)
+            }
+        },
+
+        async registerPayment(data, restaurant){
+            try {
+                
+                let payment = {
+                    id: restaurant.id,
+                    role: 'restaurant',
+                    name: restaurant.name,
+                    direction: restaurant.direction,
+                    email: restaurant.email,
+                    telephone: restaurant.telephone,
+                    plan: data.plan,
+                    amount: 0,
+                    planActivate: data.planActivate,
+                    planDeactivate: data.planDeactivate,
+                }
+
+                if (data.plan == 2) {
+                    payment.amount = 499
+                }else if(data.plan == 1){
+                    payment.amount = 499
+                }else if(data.plan == 3){
+                    payment.amount = 1399
+                }else{
+                    payment.amount = 2699
+                }
+
+                let response = await db.collection('payments').doc().set(payment)
+
+                console.log('pago registrado');
+            } catch (error) {
+                console.log(error);
             }
         },
 

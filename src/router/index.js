@@ -47,6 +47,7 @@ const router = new VueRouter({
       children: [ 
           { path: 'users', component: () => import(/* webpackChunkName: "about" */ '../views/admin/users/Index.vue')}, 
           { path: 'restaurants', component: () => import(/* webpackChunkName: "about" */ '../views/admin/restaurants/Index.vue')}, 
+          { path: 'payments', component: () => import(/* webpackChunkName: "about" */ '../views/admin/payments/Index.vue')}, 
       ] 
     },
   ]

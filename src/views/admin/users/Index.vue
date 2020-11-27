@@ -12,14 +12,21 @@
 
         <div class="row">
             <div class="col-md-12 d-flex">
-                <button class="btn btn-sm btn-info" @click="dataFilter = 'Usuario'">Repartidores</button>
+                <h2 v-if="dataFilter == 'user'">Estas viendo la seccion de repartidores</h2>
+                <h2 v-else>Estas viendo la seccion de restaurantes</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 d-flex">
+                <button class="btn btn-sm btn-info" @click="dataFilter = 'user'">Repartidores</button>
                 <button class="btn btn-sm btn-success ml-2" @click="dataFilter = 'restaurant'">Restaurantes</button>
             </div>
         </div>
         
         <div class="row mt-2">
             <div class="col-md-12">
-                <table class="table table-bordered table-responsive" style="width: 100%;">
+                <table class="table table-bordered">
                     <thead class="thead-dark">
                         <tr>
                         <th scope="col">Nombre</th>
@@ -50,7 +57,7 @@
                             <button v-if="item.role == 'restaurant'" v-on:click="formEditUser(item)" class="ml-1 btn btn-success btn-sm" data-toggle="modal" data-target="#restaurantModal">
                                 <i class="fas fa-store-alt"></i>
                             </button>
-                            <button v-if="item.role == 'Usuario'" v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm" data-toggle="modal" data-target="#pricingModal">
+                            <button v-if="item.role == 'user'" v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm" data-toggle="modal" data-target="#pricingModal">
                                 <i class="fas fa-money-bill-alt"></i>
                             </button>
 
@@ -107,7 +114,7 @@
                             <div class="form-group">
                                 <label for="role">Rol</label>
                                 <select class="form-control" v-model="addUser.role" name="role" required>
-                                    <option value="Usuario">Repartidor</option>
+                                    <option value="user">Repartidor</option>
                                     <option value="restaurant">Restaurante</option>
                                 </select>
                             </div>
@@ -158,7 +165,7 @@
                             <div class="form-group">
                                 <label for="role">Rol</label>
                                 <select class="form-control" v-model="editUser.role" name="role" required>
-                                    <option value="Usuario">Repartidor</option>
+                                    <option value="user">Repartidor</option>
                                     <option value="restaurant">Restaurante</option>
                                 </select>
                             </div>
@@ -184,7 +191,7 @@
                         </button>
                     </div>
                     <div class="modal-body" v-if="editUser != null">
-                        <form @submit.prevent="saveUserEdit" method="post">
+                        <form @submit.prevent="saveUserEdit('restaurant')" method="post">
                             <div class="form-group">
                                 <label for="role">Restaurante</label>
                                 <select class="form-control" v-model="editUser.restaurant" name="role" id="role">
@@ -226,12 +233,12 @@
                                     <div class="card-body">
                                         <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
                                         <ul class="list-unstyled mt-3 mb-4">
-                                            <li>3 Meses</li>
+                                            <li>1 Meses</li>
                                             <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
+                                            <li><small>$199 en total</small></li>
                                             
                                         </ul>
-                                        <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
+                                        <button @click="activatePlan(1)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
                                     </div>
                                 </div>
                                 <div class="card mb-4 box-shadow">
@@ -239,77 +246,49 @@
                                         <h4 class="my-0 font-weight-normal">Normal</h4>
                                     </div>
                                     <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <h1 class="card-title pricing-card-title">$166.33 <small class="text-muted">/ mo</small></h1>
                                         <ul class="list-unstyled mt-3 mb-4">
-                                            <li>6 Meses</li>
+                                            <li>3 Meses</li>
                                             <li>Acceso total al sistema</li>
-                                            <li><small>$1194 en total</small></li>
+                                            <li><small>$499 en total</small></li>
                                             
                                         </ul>
-                                        <button @click="activatePlan(6)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
-                                    </div>
-                                </div>
-                                <div class="card mb-4 box-shadow">
-                                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Plus</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
-                                        <ul class="list-unstyled mt-3 mb-4">
-                                            <li>12 meses</li>
-                                            <li>Acceso total al sistema</li>
-                                            <li><small>$2388 en total</small></li>
-                                        </ul>
-                                        <button @click="activatePlan(12)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                        <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
                                     </div>
                                 </div>
                             </div>
                             <div v-else class="card-deck mb-3 text-center">
-                                <div v-if="editUser.plan == 3" class="card mb-4 box-shadow">
+                                <div v-if="editUser.plan == 1" class="card mb-4 box-shadow">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Basico</h4>
                                     </div>
                                     <div class="card-body">
                                         <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
                                         <ul class="list-unstyled mt-3 mb-4">
-                                            <li>3 Meses</li>
+                                            <li>1 Meses</li>
                                             <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
+                                            <li><small>$199 en total</small></li>
                                             
                                         </ul>
                                         <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
                                     </div>
                                 </div>
-                                <div v-if="editUser.plan == 6" class="card mb-4 box-shadow">
+                                <div v-if="editUser.plan == 3" class="card mb-4 box-shadow">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Normal</h4>
                                     </div>
                                     <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <h1 class="card-title pricing-card-title">$166.33 <small class="text-muted">/ mo</small></h1>
                                         <ul class="list-unstyled mt-3 mb-4">
-                                            <li>6 Meses</li>
+                                            <li>3 Meses</li>
                                             <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
+                                            <li><small>$499 en total</small></li>
                                             
                                         </ul>
                                         <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
                                     </div>
                                 </div>
-                                <div v-if="editUser.plan == 12" class="card mb-4 box-shadow">
-                                    <div class="card-header">
-                                        <h4 class="my-0 font-weight-normal">Plus</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
-                                        <ul class="list-unstyled mt-3 mb-4">
-                                            <li>12 Meses</li>
-                                            <li>Acceso total al sistema</li>
-                                            <li><small>$597 en total</small></li>
-                                            
-                                        </ul>
-                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -368,7 +347,7 @@ export default {
 
             editUser: null,
 
-            dataFilter: 'Usuario',
+            dataFilter: 'user',
 
             users: [],
             restaurants: [],
@@ -399,6 +378,13 @@ export default {
                 console.log(new Date(date1));
                 console.log(new Date(date2));
 
+                let data = { 
+                    planActivate: new Date(date1), 
+                    planDeactivate: new Date(date2), 
+                    active: true, 
+                    plan: plan 
+                }
+
                  Swal.fire({
                     title: '¿Quieres actualizar el plan de este usuario?',
                     text: "Se creara un registro de pago!",
@@ -411,7 +397,9 @@ export default {
                 }).then(async (result) => {
                     if (result.isConfirmed) {
 
-                        let response = await db.collection('users').doc(this.editUser.uid).update({ planActivate: new Date(date1), planDeactivate: new Date(date2), active: true, plan: plan })
+                        let user = JSON.parse(JSON.stringify(this.editUser))
+
+                        let response = await db.collection('users').doc(user.uid).update(data)
                         $('#pricingModal').modal('hide')
 
                         Swal.fire(
@@ -419,12 +407,48 @@ export default {
                         'El plan a sido actualizado',
                         'success'
                         )
+
+                        this.registerPayment(data, user)
                     }
                 })
 
 
             } catch (error) {
                 console.log(error)
+            }
+        },
+
+        async registerPayment(data, user){
+            try {
+                
+                let payment = {
+                    id: user.uid,
+                    role: 'user',
+                    name: user.name,
+                    direction: user.direction,
+                    email: user.email,
+                    telephone: user.telephone,
+                    plan: data.plan,
+                    amount: 0,
+                    planActivate: data.planActivate,
+                    planDeactivate: data.planDeactivate,
+                }
+
+                if (data.plan == 2) {
+                    payment.amount = 499
+                }else if(data.plan == 1){
+                    payment.amount = 499
+                }else if(data.plan == 3){
+                    payment.amount = 1399
+                }else{
+                    payment.amount = 2699
+                }
+
+                let response = await db.collection('payments').doc().set(payment)
+
+                console.log('pago registrado');
+            } catch (error) {
+                console.log(error);
             }
         },
 
@@ -505,7 +529,7 @@ export default {
             // this.editUser.birthdate = user.birthdate.toDate().toISOString().split('T')[0]
         },
         
-        async saveUserEdit(){
+        async saveUserEdit(restaurant = null){
             try {
 
                 let response = await db.collection('users').doc(this.editUser.uid)
@@ -516,11 +540,35 @@ export default {
                                                 'El usuario ha sido actualizado',
                                                 'success'
                                             )
+
+                                            if (restaurant != null) {
+                                                this.updatePlan()
+                                            }
                                         })
             } catch (error) {
                 console.log(error)
             }
         },
+
+        async updatePlan(){
+            try {
+                let response = await db.collection('restaurants').doc(this.editUser.restaurant).get()
+
+                if (response) {
+                    this.editUser.planActivate = response.data().planActivate, 
+                    this.editUser.planDeactivate = response.data().planDeactivate, 
+                    this.editUser.active = response.data().active, 
+                    this.editUser.plan = response.data().plan
+
+                    console.log(this.editUser)
+
+                    this.saveUserEdit()
+                    
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
     }
 }
