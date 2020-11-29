@@ -339,10 +339,16 @@ export default {
                 completeProfile: false,
                 terms: false,
                 registerDate: new Date(),
-
+                INE: false,
+                contract: false,
                 planActivate: new Date(),
                 planDeactivate: new Date(),
                 plan: null,
+
+                _geoloc: {
+                    lat: 0,
+                    lng: 0,
+                }
             },
 
             editUser: null,
@@ -371,6 +377,7 @@ export default {
     },
 
     methods:{
+
         async activatePlan(plan){
             try {
                 let date1 = moment().format();
@@ -480,6 +487,7 @@ export default {
                     if (result.isConfirmed) {
 
                         let response = await db.collection('temporary').add(this.addUser)
+                        // await db.collection('information_user').doc(user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
 
                         Swal.fire(
                         'Guardado!',
