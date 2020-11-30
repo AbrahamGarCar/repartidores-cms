@@ -1,3 +1,10 @@
+<style>
+    .btn-main{
+        border: none !important;
+        border-radius: 0 !important;
+    }
+</style>
+
 <template>
     <section class="col-md-12">
         <!-- boton para agregar usuario -->
@@ -7,7 +14,7 @@
                 <input type="date" v-model="dateRange.startDate">
                 <input type="date" v-model="dateRange.endDate">
 
-                <button class="ml-2 btn btn-sm btn-success" @click="getPayments">Buscar</button>
+                <button class="ml-2 btn btn-sm btn-success btn-main" @click="getPayments">Buscar</button>
             </div>
         </div>
 
@@ -128,6 +135,9 @@ export default {
                 let date1 = new Date(this.dateRange.startDate)
                 let date2 = new Date(this.dateRange.endDate)
 
+                console.log(date1);
+                console.log(date2);
+
                 let response = await db.collection('payments')
                                         .where('planActivate', '>=', date1)
                                         .where('planActivate', '<=', date2)
@@ -135,14 +145,20 @@ export default {
                                         .then(query => {
                                             query.forEach(async doc => {
                                                 let data = doc.data()
-                                                let restaurant = await db.collection('restaurants').doc(data.restaurant).get()
 
-                                                Object.defineProperty(data, 'restaurantData', {
-                                                    enumerable: true,
-                                                    configurable: true,
-                                                    writable: true,
-                                                    value: restaurant.data()
-                                                });
+                                                // if (data.role == 'restaurant') {
+                                                //     let restaurant = await db.collection('restaurants').doc(data.restaurant).get()
+                                                // }else{
+                                                //     let restaurant = await db.collection('users').doc(data.id).get()
+                                                // }
+                                                
+
+                                                // Object.defineProperty(data, 'paymentUser', {
+                                                //     enumerable: true,
+                                                //     configurable: true,
+                                                //     writable: true,
+                                                //     value: restaurant.data()
+                                                // });
 
                                                 this.payments.push(data)
                                             });
@@ -154,7 +170,3 @@ export default {
     },
 }
 </script>
-
-<style>
-
-</style>

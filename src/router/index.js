@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store'
 
 import { auth } from '@/firebase'
 
@@ -22,6 +23,15 @@ const router = new VueRouter({
       name: 'Login',
       component: () => import(/* webpackChunkName: "about" */ '../views/auth/Login.vue')
     },
+
+    {
+      path: '/reload',
+      name: 'Reload',
+      meta: {
+        auth: true,
+      },
+      component: () => import(/* webpackChunkName: "about" */ '../views/error/Reload.vue')
+    },
   
     {
       path: '/register',
@@ -35,6 +45,7 @@ const router = new VueRouter({
       component: () => import(/* webpackChunkName: "about" */ '../views/Dashboard.vue'),
       meta: {
         auth: true,
+        role: 'restaurant',
       }
     },
 
@@ -43,8 +54,10 @@ const router = new VueRouter({
       component: () => import(/* webpackChunkName: "about" */ '../views/admin/Index.vue'),
       meta: {
         auth: true,
+        role: 'admin',
       },
       children: [ 
+          { path: 'dashboard', component: () => import(/* webpackChunkName: "about" */ '../views/admin/Dashboard.vue')}, 
           { path: 'users', component: () => import(/* webpackChunkName: "about" */ '../views/admin/users/Index.vue')}, 
           { path: 'restaurants', component: () => import(/* webpackChunkName: "about" */ '../views/admin/restaurants/Index.vue')}, 
           { path: 'payments', component: () => import(/* webpackChunkName: "about" */ '../views/admin/payments/Index.vue')}, 
@@ -54,9 +67,15 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+
   let user = auth.currentUser
-  //console.log(user)
+  let profile = store.state.user
+
+  console.log(profile);
+
+
   let autorization = to.matched.some(record => record.meta.auth)
+  let role = to.matched.some(record => record.meta.role)
 
   if (autorization && !user) {
     next('/login')

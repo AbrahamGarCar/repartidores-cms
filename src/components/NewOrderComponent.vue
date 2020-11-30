@@ -17,13 +17,13 @@
     <section>
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-success" @click="newOrderFormat">Nueva orden</button>
+                <button class="btn btn-success rounded-0" @click="newOrderFormat">Nueva orden</button>
             </div>
         </div>
 
         <div class="modal fade" id="newOrderFormat" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="newOrderFormatLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newOrderFormatLabel">Nueva orden</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -35,10 +35,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <google-places-autocomplete
+                                    class="rounded-0"
                                     @resultChanged="placeDetail => place = placeDetail"
                                     @resultCleared="() => place = null"
                                     >
-                                    <div slot="input" slot-scope="{ context, events, actions }">
+                                    <div class="rounded-0" slot="input" slot-scope="{ context, events, actions }">
                                         <label for="locationInput">Direccion</label>
                                         <input
                                         v-model="context.input"
@@ -59,16 +60,16 @@
                             <div class="col-md-12 mt-3">
                                 <div class="form-group">
                                     <label for="name">Nombre</label>
-                                    <input name="name" v-model="order.details.name" class="form-control" type="text">
+                                    <input name="name" v-model="order.details.name" class="form-control rounded-0" type="text">
                                     <small class="text-danger" v-if="!$v.order.details.name.required">Campo requerido</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="telephone">Telefono</label>
-                                    <input name="telephone" v-model="order.details.telephone" class="form-control" type="text">
+                                    <input name="telephone" v-model="order.details.telephone" class="form-control rounded-0" type="text">
                                 </div>
                                 <div class="form-group">
                                     <label for="reference">Referencia</label>
-                                    <textarea class="form-control" name="reference" v-model="order.details.reference" id="" cols="30" rows="10"></textarea>
+                                    <textarea class="form-control rounded-0" name="reference" v-model="order.details.reference" id="" cols="30" rows="5"></textarea>
                                     
                                 </div>
                             </div>
@@ -77,8 +78,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" :disabled="$v.$invalid" @click="saveOrder">Guardar</button>
+                    <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary rounded-0" :disabled="$v.$invalid" @click="saveOrder">Guardar</button>
                 </div>
                 </div>
             </div>
@@ -169,21 +170,31 @@ export default {
     },
 
     methods: {
-        newOrderFormat(){
-            $('#newOrderFormat').modal('show')
+        binnie(args){
+            let km = args
+            let cost = 2
+            let costClient = 5
+
+            let total = 0
+
+            if (km <= 3.4) {
+                total = 25
+
+                return total
+            }else{
+                let diff = km - 3.5
+                let multiplo = parseInt(diff) + 1
+
+                total = (20 + (costClient * multiplo)) + (5 + (cost * multiplo))
+
+                return total
+            }
+
+            return 25
         },
 
-        getAlgolia(){
-            console.log(this.restaurant.position.__)
-            console.log(this.restaurant.position.l_)
-
-            index.search('Usuario', {
-                    aroundLatLng: `${this.restaurant.position.l_}, ${this.restaurant.position.__}`,
-                    aroundRadius: 1, // 1km = 1000
-                    filters: `available=1`,
-                }).then(({ hits }) => {
-                    console.log(hits);
-                })
+        newOrderFormat(){
+            $('#newOrderFormat').modal('show')
         },
 
         async getDistance(start, end) {
@@ -202,12 +213,15 @@ export default {
                 if (status !== "OK") {
                     alert("Error was: " + status);
                 } else {
-                    // console.log(Math.round((response.rows[0].elements[0].distance.value)/1000));
+                    let km = (response.rows[0].elements[0].distance.value)/1000
+
+                    let cost = this.binnie(km)
 
                     let infoDestination = {
                         distance: response.rows[0].elements[0].distance.text,
                         duration: response.rows[0].elements[0].duration.text,
-                        value: Math.round((response.rows[0].elements[0].distance.value)/1000)
+                        value: km,
+                        cost: cost,
                     }
 
                     this.insertOrder(infoDestination)

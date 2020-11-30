@@ -12,6 +12,11 @@
         padding: 5px;
         cursor: pointer;
     }
+
+    .btn-main{
+        border: none !important;
+        border-radius: 0 !important;
+    }
 </style>
 
 <template>
@@ -19,7 +24,7 @@
         <!-- boton para agregar usuario -->
         <div class="row">
             <div class="col-md-12">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" class="btn btn-primary btn-main" data-toggle="modal" data-target="#exampleModal">
                     Agregar nuevo restaurante
                 </button>
             </div>
@@ -54,11 +59,11 @@
                             <span class="badge badge-pill badge-danger" v-else>NO</span>
                         </td>
                         <td class="text-center">
-                            <button v-on:click="formEditUser(item)" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editModal">
+                            <button v-on:click="formEditUser(item)" class="btn btn-info btn-sm btn-main" data-toggle="modal" data-target="#editModal">
                                 <i class="fas fa-edit"></i>
                             </button>
 
-                            <button v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm" data-toggle="modal" data-target="#pricingModal">
+                            <button v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm btn-main" data-toggle="modal" data-target="#pricingModal">
                                 <i class="fas fa-money-bill-alt"></i>
                             </button>
                         </td>
@@ -71,7 +76,7 @@
         <!-- Modal crear-->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -82,15 +87,15 @@
                         <form @submit.prevent="saveRestaurant" method="post">
                             <div class="form-group">
                                 <label for="name">Nombre</label>
-                                <input class="form-control" type="text" v-model="restaurant.name" name="name" required>
+                                <input class="form-control rounded-0" type="text" v-model="restaurant.name" name="name" required>
                             </div>
                             <div class="form-group">
                                 <label for="mail">Correo</label>
-                                <input class="form-control" type="email" v-model="restaurant.email" name="mail" required>
+                                <input class="form-control rounded-0" type="email" v-model="restaurant.email" name="mail" required>
                             </div>
                             <div class="form-group">
                                 <label for="telephone">Telefono</label>
-                                <input class="form-control" type="number" v-model="restaurant.telephone" name="phone" required>
+                                <input class="form-control rounded-0" type="number" v-model="restaurant.telephone" name="phone" required>
                             </div>
                             <google-places-autocomplete
                                     @resultChanged="placeDetail => place = placeDetail"
@@ -113,8 +118,8 @@
                                     </div>
                             </google-places-autocomplete>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Registrar</button>
+                                <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary rounded-0">Registrar</button>
                             </div>
                         </form>
                     </div>
@@ -125,7 +130,7 @@
         <!-- Modal editar -->
         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel">Editar Usuario</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -136,15 +141,15 @@
                         <form @submit.prevent="saveUserEdit" method="post">
                             <div class="form-group">
                                 <label for="name">Nombre</label>
-                                <input class="form-control" type="text" v-model="editRestaurant.name" name="name" required>
+                                <input class="form-control rounded-0" type="text" v-model="editRestaurant.name" name="name" required>
                             </div>
                             <div class="form-group">
                                 <label for="mail">Correo</label>
-                                <input class="form-control" type="email" v-model="editRestaurant.email" name="mail" required>
+                                <input class="form-control rounded-0" type="email" v-model="editRestaurant.email" name="mail" required>
                             </div>
                             <div class="form-group">
                                 <label for="telephone">Telefono</label>
-                                <input class="form-control" type="number" v-model="editRestaurant.telephone" name="phone" required>
+                                <input class="form-control rounded-0" type="number" v-model="editRestaurant.telephone" name="phone" required>
                             </div>
                             <google-places-autocomplete
                                     @resultChanged="placeDetail => place = placeDetail"
@@ -168,8 +173,8 @@
                             </google-places-autocomplete>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary rounded-0">Actualizar</button>
                             </div>
                         </form>
                     </div>
@@ -180,7 +185,7 @@
         <!-- Modal pagos -->
         <div class="modal fade" id="pricingModal" tabindex="-1" role="dialog" aria-labelledby="pricingModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="pricingModalLabel">Elegir plan</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -194,7 +199,7 @@
                         </div>
                         <div class="container">
                             <div v-if="editRestaurant.firstTime" class="card-deck mb-3 text-center">
-                                <div class="card mb-4 box-shadow">
+                                <div class="card mb-4 box-shadow rounded-0">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Promocion</h4>
                                     </div>
@@ -206,13 +211,13 @@
                                             <li><small>$499 en total</small></li>
                                             
                                         </ul>
-                                        <button @click="activatePlan(2)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
+                                        <button @click="activatePlan(2)" type="button" class="btn btn-lg btn-block btn-outline-primary rounded-0">Activar plan</button>
                                     </div>
                                 </div>
                             </div>
                             <div v-else>
                                 <div v-if="editRestaurant.plan == null" class="card-deck mb-3 text-center">
-                                    <div class="card mb-4 box-shadow">
+                                    <div class="card mb-4 box-shadow rounded-0">
                                         <div class="card-header">
                                             <h4 class="my-0 font-weight-normal">Basico</h4>
                                         </div>
@@ -224,10 +229,10 @@
                                                 <li><small>$499 en total</small></li>
                                                 
                                             </ul>
-                                            <button @click="activatePlan(1)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
+                                            <button @click="activatePlan(1)" type="button" class="btn btn-lg btn-block btn-outline-primary rounded-0">Activar plan</button>
                                         </div>
                                     </div>
-                                    <div class="card mb-4 box-shadow">
+                                    <div class="card mb-4 box-shadow rounded-0">
                                         <div class="card-header">
                                             <h4 class="my-0 font-weight-normal">Normal</h4>
                                         </div>
@@ -239,10 +244,10 @@
                                                 <li><small>$1399 en total</small></li>
                                                 
                                             </ul>
-                                            <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                            <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-primary rounded-0">Activar plan</button>
                                         </div>
                                     </div>
-                                    <div class="card mb-4 box-shadow">
+                                    <div class="card mb-4 box-shadow rounded-0">
                                         <div class="card-header">
                                             <h4 class="my-0 font-weight-normal">Plus</h4>
                                         </div>
@@ -253,13 +258,13 @@
                                                 <li>Acceso total al sistema</li>
                                                 <li><small>$2699 en total</small></li>
                                             </ul>
-                                            <button @click="activatePlan(6)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                            <button @click="activatePlan(6)" type="button" class="btn btn-lg btn-block btn-primary rounded-0">Activar plan</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div v-else class="card-deck mb-3 text-center">
                                     <!-- Promocion -->
-                                    <div v-if="editRestaurant.plan == 2" class="card mb-4 box-shadow">
+                                    <div v-if="editRestaurant.plan == 2" class="card mb-4 box-shadow rounded-0">
                                         <div class="card-header">
                                             <h4 class="my-0 font-weight-normal">Promocion</h4>
                                         </div>
@@ -275,7 +280,7 @@
                                         </div>
                                     </div>
                                     <!-- Termina promocion -->
-                                    <div v-if="editRestaurant.plan == 1" class="card mb-4 box-shadow">
+                                    <div v-if="editRestaurant.plan == 1" class="card mb-4 box-shadow rounded-0">
                                         <div class="card-header">
                                             <h4 class="my-0 font-weight-normal">Basico</h4>
                                         </div>
@@ -290,7 +295,7 @@
                                             <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
                                         </div>
                                     </div>
-                                    <div v-if="editRestaurant.plan == 3" class="card mb-4 box-shadow">
+                                    <div v-if="editRestaurant.plan == 3" class="card mb-4 box-shadow rounded-0">
                                         <div class="card-header">
                                             <h4 class="my-0 font-weight-normal">Normal</h4>
                                         </div>
@@ -305,7 +310,7 @@
                                             <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
                                         </div>
                                     </div>
-                                    <div v-if="editRestaurant.plan == 6" class="card mb-4 box-shadow">
+                                    <div v-if="editRestaurant.plan == 6" class="card mb-4 box-shadow rounded-0">
                                         <div class="card-header">
                                             <h4 class="my-0 font-weight-normal">Plus</h4>
                                         </div>
@@ -384,11 +389,11 @@ export default {
 
                 if (this.editRestaurant != null) {
                     this.editRestaurant.direction = this.place.formatted_address
-                    this.editRestaurant.position = [this.place.geometry.location.lat(), this.place.geometry.location.lng()]
+                    this.editRestaurant.position = new firebase.firestore.GeoPoint(this.place.geometry.location.lat(), this.place.geometry.location.lng())
                 }
 
                 this.restaurant.direction = this.place.formatted_address
-                this.restaurant.position = [this.place.geometry.location.lat(), this.place.geometry.location.lng()]
+                this.restaurant.position = new firebase.firestore.GeoPoint(this.place.geometry.location.lat(), this.place.geometry.location.lng())
             }    
         }
     },

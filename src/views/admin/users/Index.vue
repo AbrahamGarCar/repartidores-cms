@@ -1,8 +1,15 @@
+<style>
+    .btn-main{
+        border: none !important;
+        border-radius: 0 !important;
+    }
+</style>
+
 <template>
     <section class="col-md-12">
         <div class="row">
             <div class="col-md-12">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" class="btn btn-primary btn-main" data-toggle="modal" data-target="#exampleModal">
                     Agregar nuevo usuario
                 </button>
             </div>
@@ -13,14 +20,16 @@
         <div class="row">
             <div class="col-md-12 d-flex">
                 <h2 v-if="dataFilter == 'user'">Estas viendo la seccion de repartidores</h2>
-                <h2 v-else>Estas viendo la seccion de restaurantes</h2>
+                <h2 v-if="dataFilter == 'restaurant'">Estas viendo la seccion de restaurantes</h2>
+                <h2 v-if="dataFilter == 'admin'">Estas viendo la seccion de administradores</h2>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12 d-flex">
-                <button class="btn btn-sm btn-info" @click="dataFilter = 'user'">Repartidores</button>
-                <button class="btn btn-sm btn-success ml-2" @click="dataFilter = 'restaurant'">Restaurantes</button>
+                <button class="btn-main btn btn-sm btn-info" @click="dataFilter = 'user'">Repartidores</button>
+                <button class="btn-main btn btn-sm btn-success ml-2" @click="dataFilter = 'restaurant'">Restaurantes</button>
+                <button class="btn-main btn btn-sm btn-danger ml-2" @click="dataFilter = 'admin'">Administrador</button>
             </div>
         </div>
         
@@ -33,7 +42,7 @@
                         <th scope="col">Apellido</th>
                         <th scope="col">Correo</th>
                         <th scope="col">Estatus</th>
-                        <th scope="col">Plus</th>
+                        <th scope="col" v-if="dataFilter != 'admin'">Plus</th>
                         <th scope="col">Opciones</th>
                         </tr>
                     </thead>
@@ -46,18 +55,18 @@
                             <i v-if="!item.active" style="font-size: 22px; cursor: pointer;" @click="changeStatus(item)" class="fas fa-toggle-off"></i>
                             <i v-else style="font-size: 22px; cursor: pointer;" @click="changeStatus(item)" class="fas fa-toggle-on"></i>
                         </td>
-                        <td class="text-center">
+                        <td class="text-center" v-if="dataFilter != 'admin'">
                             <span class="badge badge-pill badge-success" v-if="item.plan">OK</span>
                             <span class="badge badge-pill badge-danger" v-else>NO</span>
                         </td>
                         <td class="text-center">
-                            <button v-on:click="formEditUser(item)" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editModal">
+                            <button v-on:click="formEditUser(item)" class="btn btn-info btn-sm btn-main" data-toggle="modal" data-target="#editModal">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button v-if="item.role == 'restaurant'" v-on:click="formEditUser(item)" class="ml-1 btn btn-success btn-sm" data-toggle="modal" data-target="#restaurantModal">
+                            <button v-if="item.role == 'restaurant'" v-on:click="formEditUser(item)" class="ml-1 btn btn-success btn-sm btn-main" data-toggle="modal" data-target="#restaurantModal">
                                 <i class="fas fa-store-alt"></i>
                             </button>
-                            <button v-if="item.role == 'user'" v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm" data-toggle="modal" data-target="#pricingModal">
+                            <button v-if="item.role == 'user'" v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm btn-main" data-toggle="modal" data-target="#pricingModal">
                                 <i class="fas fa-money-bill-alt"></i>
                             </button>
 
@@ -73,7 +82,7 @@
         <!-- Modal crear -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -84,23 +93,23 @@
                         <form @submit.prevent="saveUser" method="post">
                             <div class="form-group">
                                 <label for="name">Nombre</label>
-                                <input class="form-control" type="text" v-model="addUser.name" name="name" required>
+                                <input class="form-control rounded-0" type="text" v-model="addUser.name" name="name" required>
                             </div>
                             <div class="form-group">
                                 <label for="lastname">Apellido paterno</label>
-                                <input class="form-control" type="text" v-model="addUser.lastName" name="lastname">
+                                <input class="form-control rounded-0" type="text" v-model="addUser.lastName" name="lastname">
                             </div>
                             <div class="form-group">
                                 <label for="lastname">Apellido materno</label>
-                                <input class="form-control" type="text" v-model="addUser.secondLastName" name="lastname">
+                                <input class="form-control rounded-0" type="text" v-model="addUser.secondLastName" name="lastname">
                             </div>
                             <div class="form-group">
                                 <label for="mail">Correo</label>
-                                <input class="form-control" type="email" v-model="addUser.email" name="mail" required>
+                                <input class="form-control rounded-0" type="email" v-model="addUser.email" name="mail" required>
                             </div>
                             <div class="form-group">
                                 <label for="mail">Contraseña</label>
-                                <input class="form-control" v-model="addUser.password" name="password" required>
+                                <input class="form-control rounded-0" v-model="addUser.password" name="password" required>
                             </div>
                             <!-- <div class="form-group">
                                 <label for="date">Fecha de nacimiento</label>
@@ -109,19 +118,20 @@
                             
                             <div class="form-group">
                                 <label for="telephone">Telefono</label>
-                                <input class="form-control" type="number" v-model="addUser.telephone" name="phone" required>
+                                <input class="form-control rounded-0" type="number" v-model="addUser.telephone" name="phone" required>
                             </div>
                             <div class="form-group">
                                 <label for="role">Rol</label>
-                                <select class="form-control" v-model="addUser.role" name="role" required>
+                                <select class="form-control rounded-0" v-model="addUser.role" name="role" required>
                                     <option value="user">Repartidor</option>
                                     <option value="restaurant">Restaurante</option>
+                                    <option value="admin">Administrador</option>
                                 </select>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Registrar</button>
+                                <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary rounded-0">Registrar</button>
                             </div>
                         </form>
                     </div>
@@ -132,7 +142,7 @@
         <!-- Modal editar -->
         <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel">Editar Usuario</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -143,15 +153,15 @@
                         <form @submit.prevent="saveUserEdit" method="post">
                             <div class="form-group">
                                 <label for="name">Nombre</label>
-                                <input class="form-control" type="text" v-model="editUser.name" name="name" required>
+                                <input class="form-control rounded-0" type="text" v-model="editUser.name" name="name" required>
                             </div>
                             <div class="form-group">
                                 <label for="lastname">Apellido paterno</label>
-                                <input class="form-control" type="text" v-model="editUser.lastName" name="lastname">
+                                <input class="form-control rounded-0" type="text" v-model="editUser.lastName" name="lastname">
                             </div>
                             <div class="form-group">
                                 <label for="lastname">Apellido materno</label>
-                                <input class="form-control" type="text" v-model="editUser.secondLastName" name="lastname">
+                                <input class="form-control rounded-0" type="text" v-model="editUser.secondLastName" name="lastname">
                             </div>
                             <!-- <div class="form-group">
                                 <label for="date">Fecha de nacimiento</label>
@@ -160,19 +170,19 @@
                             
                             <div class="form-group">
                                 <label for="telephone">Telefono</label>
-                                <input class="form-control" type="number" v-model="editUser.telephone" name="phone" required>
+                                <input class="form-control rounded-0" type="number" v-model="editUser.telephone" name="phone" required>
                             </div>
                             <div class="form-group">
                                 <label for="role">Rol</label>
-                                <select class="form-control" v-model="editUser.role" name="role" required>
+                                <select class="form-control rounded-0" v-model="editUser.role" name="role" required>
                                     <option value="user">Repartidor</option>
                                     <option value="restaurant">Restaurante</option>
                                 </select>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary rounded-0">Actualizar</button>
                             </div>
                         </form>
                     </div>
@@ -183,7 +193,7 @@
         <!-- Modal restaurante -->
         <div class="modal fade" id="restaurantModal" tabindex="-1" role="dialog" aria-labelledby="restaurantModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="restaurantModalLabel">Asignar a restaurante</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -194,14 +204,14 @@
                         <form @submit.prevent="saveUserEdit('restaurant')" method="post">
                             <div class="form-group">
                                 <label for="role">Restaurante</label>
-                                <select class="form-control" v-model="editUser.restaurant" name="role" id="role">
+                                <select class="form-control rounded-0" v-model="editUser.restaurant" name="role" id="role">
                                     <option v-for="(restaurant, index) in restaurants" :key="index" :value="restaurant.id">{{ restaurant.name }}</option>
                                 </select>
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary rounded-0">Actualizar</button>
                             </div>
                         </form>
                     </div>
@@ -212,7 +222,7 @@
         <!-- Modal pagos -->
         <div class="modal fade" id="pricingModal" tabindex="-1" role="dialog" aria-labelledby="pricingModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="pricingModalLabel">Elegir plan</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -226,7 +236,7 @@
                         </div>
                         <div class="container">
                             <div v-if="editUser.plan == null" class="card-deck mb-3 text-center">
-                                <div class="card mb-4 box-shadow">
+                                <div class="card mb-4 box-shadow rounded-0 rounded-0">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Basico</h4>
                                     </div>
@@ -238,10 +248,10 @@
                                             <li><small>$199 en total</small></li>
                                             
                                         </ul>
-                                        <button @click="activatePlan(1)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button>
+                                        <button @click="activatePlan(1)" type="button" class="btn btn-lg btn-block btn-outline-primary rounded-0">Activar plan</button>
                                     </div>
                                 </div>
-                                <div class="card mb-4 box-shadow">
+                                <div class="card mb-4 box-shadow rounded-0">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Normal</h4>
                                     </div>
@@ -253,12 +263,12 @@
                                             <li><small>$499 en total</small></li>
                                             
                                         </ul>
-                                        <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-primary">Activar plan</button>
+                                        <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-primary rounded-0">Activar plan</button>
                                     </div>
                                 </div>
                             </div>
                             <div v-else class="card-deck mb-3 text-center">
-                                <div v-if="editUser.plan == 1" class="card mb-4 box-shadow">
+                                <div v-if="editUser.plan == 1" class="card mb-4 box-shadow rounded-0">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Basico</h4>
                                     </div>
@@ -273,7 +283,7 @@
                                         <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
                                     </div>
                                 </div>
-                                <div v-if="editUser.plan == 3" class="card mb-4 box-shadow">
+                                <div v-if="editUser.plan == 3" class="card mb-4 box-shadow rounded-0">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Normal</h4>
                                     </div>
@@ -581,7 +591,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>

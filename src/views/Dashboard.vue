@@ -12,6 +12,11 @@
         background-color: #69BF87;
         color: white;
     }
+
+    .btn-main{
+        border: none !important;
+        border-radius: 0 !important;
+    }
 </style>
 
 <template>
@@ -28,9 +33,9 @@
                     <h3 style="font-weight: bold;">Ordenes pendientes</h3>
                 </div>
                 <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <table class="table table-bordered table-responsive">
+                    <div class="card rounded-0">
+                        <div class="card-body rounded-0">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -49,10 +54,16 @@
                                         <td>{{ item.directionDestination }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
-                                        <td>$30.00</td>
-                                        <td>
-                                            <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
-                                            <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">Buscando</button>
+                                        <td>${{ item.infoDestination.cost }}</td>
+                                        <td class="text-center">
+                                            <button v-if="item.level == 1" class="btn btn-info btn-main" @click="searchDeliveryMan(item)">
+                                                <i class="fas fa-motorcycle"></i>
+                                            </button>
+                                            <button v-else class="btn btn-danger rounded-0" @click="searchDeliveryMan(item)">
+                                                <div class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="sr-only">Loading...</span>
+                                                </div>
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -60,18 +71,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="col-md-4" v-for="(item, index) in pendingOrders" :key="index">
-                    <div class="card p-2" :class="[ item.level == 1 ? 'level_1' : 'level_2' ]">
-                        <div class="card-body">
-                            <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
-                            <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
-                            <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
-                        </div>
-
-                        <button v-if="item.level == 1" class="btn btn-block btn-info" @click="searchDeliveryMan(item)">Buscar repartidores</button>
-                        <button v-else class="btn btn-block btn-danger" @click="searchDeliveryMan(item)">{{ item.timer | alarm }}</button>
-                    </div>
-                </div> -->
             </div>
 
             <div class="row mt-4">
@@ -79,9 +78,9 @@
                     <h3 style="font-weight: bold;">Ordenes aceptadas</h3>
                 </div>
                 <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <table class="table table-bordered table-responsive">
+                    <div class="card rounded-0">
+                        <div class="card-body rounded-0">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
@@ -101,8 +100,11 @@
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
                                         <td>$30.00</td>
-                                        <td>
-                                            <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
+                                        <td class="text-center">
+                                            <button class="btn btn-info btn-main" @click="getDeliveryMan(item)">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            
                                         </td>
                                     </tr>
                                 </tbody>
@@ -110,38 +112,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="col-md-4" v-for="(item, index) in aceptedOrders" :key="index">
-                    <div class="card p-2" style="background-color: #4E54BF; color: white;">
-                        <div class="card-body">
-                            <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
-                            <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
-                            <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
-                        </div>
-                        <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
-                    </div>
-                </div> -->
             </div>
-
-            <!-- <div class="row mt-4">
-                <div class="col-md-12 mt-2">
-                    <h3 style="font-weight: bold;">Ordenes en curso</h3>
-                </div>
-                <div class="col-md-4" v-for="(item, index) in ordersInProgress" :key="index">
-                    <div class="card p-2" style="background-color: #4E54BF; color: white;">
-                        <div class="card-body">
-                            <p><span style="font-weight: bold;">Numero de orden:</span> {{ item.id }}</p>
-                            <p><span style="font-weight: bold;">Cliente:</span>  {{ item.details.name }}</p>
-                            <p><span style="font-weight: bold;">Direccion:</span>  {{ item.directionDestination }}</p>
-                        </div>
-                        <button class="btn btn-block btn-info" @click="getDeliveryMan(item)">Ver datos del repartidor</button>
-                    </div>
-                </div>
-            </div> -->
 
             <!--Lista de repartidores-->
             <div class="modal fade" id="deliveryManlist" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deliveryManlistLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
+                    <div class="modal-content rounded-0">
                         <div class="modal-header">
                             <h5 class="modal-title" id="deliveryManlistLabel">Repartidores</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -179,16 +155,16 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-success" @click="releaseNotifications">Notificar</button>
+                            <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success rounded-0" @click="releaseNotifications">Notificar</button>
                         </div>
                     </div>
                 </div>
             </div>
             <!--Info de repartidor-->
             <div class="modal fade" id="deliveryMan" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deliveryManLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content rounded-0">
                     <div class="modal-header">
                         <h5 class="modal-title" id="deliveryManLabel">Repartidor</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -209,10 +185,18 @@
                                     <p>{{ deliveryMan.telephone }}</p>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-warning btn-block btn-main" @click="orderCompleteNotification">
+                                        <i class="fas fa-comment-dots"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
                     </div>
                     </div>
                 </div>
@@ -294,7 +278,10 @@ export default {
     },
 
     created() {
-        this.getRestaurant()
+        if (this.user != null) {
+            this.getRestaurant()
+        }
+        
     },
 
     watch: {
@@ -380,6 +367,36 @@ export default {
             }
         },
 
+        async orderCompleteNotification(){
+            try {
+                Swal.fire({
+                    title: '¿Avisar que la orden esta lista?',
+                    text: "Se le notificara al repartidor!",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Notificar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        let response = await db.collection('notifications').doc(this.deliveryMan.token).set({ title: 'Orden lista', content: 'Tu entrega ya se encuentra lista' })
+
+                        Swal.fire(
+                            'Notificado!',
+                            'Usuario notificado',
+                            'success'
+                        )
+                    
+                    }
+                    
+                })
+                
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
         async getOrders(){
             try {
                 this.orders = []
@@ -426,14 +443,17 @@ export default {
 
             this.order = order
 
-            console.log(this.restaurant.position.__)
             console.log(this.restaurant.position.l_)
+            console.log(this.restaurant.position.__)
 
-            index.search('Usuario', {
+            index.search('user', {
                     aroundLatLng: `${this.restaurant.position.l_}, ${this.restaurant.position.__}`,
+                    // aroundLatLng: '28.7221648, -106.1476528',
                     aroundRadius: 90000, // 1km = 1000
-                    filters: `available=1`,
+                    filters: `active=1`,
                 }).then(({ hits }) => {
+
+                    console.log('o mai gai comeen');
                     console.log(hits);
                     this.deliveryMans = hits
                     this.deliveryManList = hits

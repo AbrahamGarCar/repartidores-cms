@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from '../router'
 
 import { auth, db } from '@/firebase'
 
@@ -28,19 +29,14 @@ export default new Vuex.Store({
 
                 if (document.exists) {
                     let user = document.data()
-
-                    // if (user.restaurant) {
-                    //     let restaurant = await db.collection('restaurants').doc(user.restaurant).get()
-                    //     if (restaurant.exists) {
-                    //         Object.defineProperty(user, 'restaurantObject', {
-                    //             enumerable: true,
-                    //             configurable: true,
-                    //             writable: true,
-                    //             value: 'static'
-                    //         });
-                    //     }
-                    // }
                     commit('updateUser', user)
+                    
+                    if (user.role == 'restaurant') {
+                        router.replace('/dashboard')    
+                    }else{
+                        router.replace('/admin/dashboard') 
+                    }
+                    
                 }
 
             } catch (error) {
