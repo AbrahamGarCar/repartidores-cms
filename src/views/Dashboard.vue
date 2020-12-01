@@ -380,7 +380,9 @@ export default {
                     cancelButtonText: 'Cancelar',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        let response = await db.collection('notifications').doc(this.deliveryMan.token).set({ title: 'Orden lista', content: 'Tu entrega ya se encuentra lista' })
+
+                        await db.collection('orders').doc(this.order.id).update({ process: 2 })
+                        await db.collection('notifications').doc(this.deliveryMan.token).set({ title: 'Orden lista', content: 'Tu entrega ya se encuentra lista' })
 
                         Swal.fire(
                             'Notificado!',
@@ -424,6 +426,8 @@ export default {
         },
 
         async getDeliveryMan(args){
+            this.order = args
+
             try {
                 let response = await db.collection('users')
                                         .doc(args.deliveryMan)

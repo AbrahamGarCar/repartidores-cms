@@ -33,6 +33,9 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
+                            <div class="col-md-12 text-right">
+                                <h5>Numero de orden: {{ order.orderNumber }}</h5>
+                            </div>
                             <div class="col-md-12">
                                 <google-places-autocomplete
                                     class="rounded-0"
@@ -128,11 +131,13 @@ export default {
                 status: 'PENDIENTE',
                 idRestaurant: '',
                 level: 1,
+                orderNumber: 0,
+                process: 1,
             },
 
             APIKEY: 'AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas',
 
-            place: null,
+            place: null
         }
     },
 
@@ -170,6 +175,18 @@ export default {
     },
 
     methods: {
+        randomOrderNumber(longitud, caracteres) {
+            longitud = longitud || 6;
+            caracteres = caracteres || "0123456789";
+
+            var cadena = "";
+            var max = caracteres.length-1;
+            for (var i = 0; i<longitud; i++) {
+                cadena += caracteres[ Math.floor(Math.random() * (max+1)) ];
+            }
+            return Number(cadena);
+        },
+
         binnie(args){
             let km = args
             let cost = 2
@@ -194,6 +211,7 @@ export default {
         },
 
         newOrderFormat(){
+            this.order.orderNumber = this.randomOrderNumber()
             $('#newOrderFormat').modal('show')
         },
 
@@ -233,30 +251,48 @@ export default {
 
         async insertOrder(infoDestination){
             try {
-                let conf = confirm('¿Quieres guardar esta orden?')
+                Swal.fire({
+                    title: '¿Quieres guardar esta orden?',
+                    text: "Se registrara el pedido!",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Registrar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
 
-                if (conf) {
-                    this.order.idRestaurant = this.restaurant.id
-                    this.order.directionOrigin = this.restaurant.direction
-                    this.order.origin = this.restaurant.position
-                    this.order.name = this.restaurant.name
-                    this.order.infoDestination = infoDestination
+                        this.order.idRestaurant = this.restaurant.id
+                        this.order.directionOrigin = this.restaurant.direction
+                        this.order.origin = this.restaurant.position
+                        this.order.name = this.restaurant.name
+                        this.order.infoDestination = infoDestination
 
-                    let response = await db.collection('orders').add(this.order)
+                        let response = await db.collection('orders').add(this.order)
 
-                    if (response) {
-                        alert('Orden agregada')
-                        
-                        this.order.directionDestination = ''
-                        this.order.destination = null
-                        this.order.details.name = ''
-                        this.order.details.telephone = ''
-                        this.order.details.reference = ''
+                        if (response) {
+                            
+                            Swal.fire(
+                            'Guardada!',
+                            'Se ha registrado el pedido.',
+                            'success'
+                            )
+                            
+                            this.order.directionDestination = ''
+                            this.order.destination = null
+                            this.order.details.name = ''
+                            this.order.details.telephone = ''
+                            this.order.details.reference = ''
 
-                        this.place = null
-                        $('#newOrderFormat').modal('show')
+                            this.place = null
+                            $('#newOrderFormat').modal('hide')
+                        }
+                       
                     }
-                }
+                })
+
+                
             } catch (error) {
                 console.log(error)
             }

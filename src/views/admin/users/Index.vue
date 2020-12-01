@@ -34,8 +34,52 @@
         </div>
         
         <div class="row mt-2">
+            
             <div class="col-md-12">
-                <table class="table table-bordered">
+                <vue-good-table
+                    title="Dynamic Table"
+                    
+                    :search-options="{
+                        enabled: true
+                    }"
+                    :pagination-options="{
+                        enabled: true,
+                        mode: 'pages'
+                    }"
+                    :columns="columns"
+                    :rows="filterUsers"
+                    :lineNumbers="true"
+                    :defaultSortBy="{field: 'name', type: 'asec'}"
+                    :globalSearch="true"
+                    :paginate="true"
+                    styleClass="table condensed table-bordered table-striped">
+                    
+                    <template class="text-center" slot="table-row" slot-scope="props">
+                        <span class="text-center" v-if="props.column.field == 'status'">
+                            <i v-if="!props.row.active" style="font-size: 22px; cursor: pointer;" @click="changeStatus(props.row)" class="fas fa-toggle-off"></i>
+                            <i v-else style="font-size: 22px; cursor: pointer;" @click="changeStatus(props.row)" class="fas fa-toggle-on"></i>
+                        </span>
+                        <span class="text-center" v-if="props.column.field == 'plus'">
+                            <span class="badge badge-pill badge-success" v-if="props.row.plan">OK</span>
+                            <span class="badge badge-pill badge-danger" v-else>NO</span>
+                        </span>
+                        <span class="text-center" v-if="props.column.field == 'options'">
+                            <button v-on:click="formEditUser(props.row)" class="btn btn-info btn-sm btn-main" data-toggle="modal" data-target="#editModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button v-if="props.row.role == 'restaurant'" v-on:click="formEditUser(props.row)" class="ml-1 btn btn-success btn-sm btn-main" data-toggle="modal" data-target="#restaurantModal">
+                                <i class="fas fa-store-alt"></i>
+                            </button>
+                            <button v-if="props.row.role == 'user'" v-on:click="formEditUser(props.row)" class="ml-1 btn btn-secondary btn-sm btn-main" data-toggle="modal" data-target="#pricingModal">
+                                <i class="fas fa-money-bill-alt"></i>
+                            </button>
+                        </span>
+                        <span v-else>
+                            {{props.formattedRow[props.column.field]}}
+                        </span>
+                    </template>
+                </vue-good-table>
+                <!-- <table class="table table-bordered" id="usersTable">
                     <thead class="thead-dark">
                         <tr>
                         <th scope="col">Nombre</th>
@@ -73,7 +117,7 @@
                         </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> -->
             </div>
         </div>
         <!-- boton para agregar usuario -->
@@ -336,6 +380,33 @@ export default {
 
     data(){
         return{
+            searchTerm: '',
+
+            columns: [
+                {
+                    label: 'Nombre',
+                    field: 'name',
+                    filterable: true,
+                },
+                {
+                    label: 'Email',
+                    field: 'email',
+                    filterable: true,
+                },
+                {
+                    label: 'Estatus',
+                    field: 'status',
+                },
+                {
+                    label: 'Plus',
+                    field: 'plus',
+                },
+                {
+                    label: 'Opciones',
+                    field: 'options',
+                },
+
+            ],
             addUser: {
                 name: '',
                 lastName: '',
