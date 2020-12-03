@@ -1,29 +1,31 @@
+<style scoped>
+    form input{
+        border: 1px solid white !important;
+        border-radius: 15px !important;
+        background-color: white;
+    }
+
+    .btn-main{
+        border: none !important;
+        border-radius: 0 !important;
+    }
+</style>
+
 <template>
-    <section class="row mt-5">
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-header">
-                    LOGIN
+    <section class="row mt-5 d-flex justify-content-center align-items-center">
+        <div class="col-md-5 text-center">
+            <img src="https://electronicssoftware.net/wp-content/uploads/user.png" width="100px" alt="">
+            <form @submit.prevent="login" class="mt-4">
+                <div class="form-group">
+                    <!-- <label for="email">Email</label> -->
+                    <input v-model="usuario" type="email" class="form-control" id="email" placeholder="Email" aria-describedby="emailHelp">
                 </div>
-                <div class="card-body">
-                    <form @submit.prevent="login">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input v-model="usuario" type="email" class="form-control" id="email" aria-describedby="emailHelp">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input v-model="password" type="password" class="form-control" id="password">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Sign in</button>
-                    </form>
+                <div class="form-group">
+                    <!-- <label for="password">Password</label> -->
+                    <input v-model="password" type="password" class="form-control" placeholder="Contraseña" id="password">
                 </div>
-            </div>
-        </div>
-        <div class="col-md-7">
-            <pre>
-                {{ $data }}
-            </pre>
+                <button type="submit" class="btn btn-primary btn-main">Iniciar sesion</button>
+            </form>
         </div>
     </section>
 </template>
@@ -45,10 +47,6 @@ export default {
         async login(){
             try{
                 let response = await auth.signInWithEmailAndPassword(this.usuario, this.password)
-
-                if (response) {
-                    this.$router.replace('/dashboard')
-                }
                 
             }
             catch(error){
@@ -68,6 +66,3 @@ export default {
 }
 </script>
 
-<style>
-
-</style>

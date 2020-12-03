@@ -10,17 +10,19 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div v-if="user == null" class="navbar-nav ml-auto">
-                        <router-link class="nav-link" to="/">Login</router-link>
-                        <router-link class="nav-link" to="/register">Register</router-link>
+                        <router-link class="nav-link" to="/">Ingresar</router-link>
+                        <router-link class="nav-link" to="/"></router-link>
                     </div>
                     <div v-else class="navbar-nav ml-auto">
-                        <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
+                        <router-link v-if="user.role == 'admin'" class="nav-link" to="/admin/dashboard">Administrador</router-link>
+                        <router-link v-if="user.role == 'restaurant'" class="nav-link" to="/dashboard">Dashboard</router-link>
                         <div class="nav-item dropdown">
+                            
                             <a class="nav-link dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ user.name }}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                <button class="dropdown-item" type="button" @click="logOut">Sign Out</button>
+                                <button class="dropdown-item" type="button" @click="logOut">Salir</button>
                             </div>
                         </div>
                     </div>
@@ -28,7 +30,7 @@
             </div>
         </nav>
         
-        <section class="container pb-5">
+        <section class="container-fluid pb-5">
             <router-view/>
         </section>
     </div>
@@ -46,7 +48,7 @@ export default {
 
     data(){
         return{
-
+            // user: {}
         }
     },
 
