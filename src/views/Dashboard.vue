@@ -23,7 +23,7 @@
     <section class="row">
         <div class="col-md-12">
             <div class="row mt-4">
-                <div class="col-md-12">
+                <div class="col-md-12" v-if="user.active">
                     <NewOrder :restaurant="restaurant" />
                 </div>
             </div>
@@ -201,6 +201,19 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="activateModal" tabindex="-1" aria-labelledby="activateModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-body d-flex justify-content-center align-items-center flex-column">
+                            <h2>Cuenta suspendida</h2>
+                            <p class="text-center">Tu cuenta ha sido suspendida, ponte en contacto al siguiente numero para aclaraciones</p>
+                            <p class="text-center">555-555-555</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </template>
@@ -275,6 +288,12 @@ export default {
         ordersInProgress(){
             return this.orders.filter(doc => doc.status == 'EN CURSO')
         }
+    },
+
+    mounted() {
+       if (!this.user.active) {
+           $('#activateModal').modal({backdrop:'static',keyboard:false, show:true})
+       } 
     },
 
     created() {
@@ -453,7 +472,7 @@ export default {
             index.search('user', {
                     aroundLatLng: `${this.restaurant.position.l_}, ${this.restaurant.position.__}`,
                     // aroundLatLng: '28.7221648, -106.1476528',
-                    aroundRadius: 90000, // 1km = 1000
+                    aroundRadius: 6000, // 1km = 1000
                     filters: `active=1`,
                 }).then(({ hits }) => {
 

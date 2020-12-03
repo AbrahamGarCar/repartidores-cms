@@ -42,6 +42,19 @@
             <img src="../../assets/images/not-permissions.png" width="30%" style="border-radius: 20px;" alt="">
             <h2>No permitido</h2>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="activateModal" tabindex="-1" aria-labelledby="activateModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-0">
+                    <div class="modal-body d-flex justify-content-center align-items-center flex-column">
+                        <h2>Cuenta suspendida</h2>
+                        <p class="text-center">Tu cuenta ha sido suspendida, ponte en contacto al siguiente numero para aclaraciones</p>
+                        <p class="text-center">555-555-555</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -74,6 +87,12 @@ export default {
         return{
 
         }
+    },
+
+    mounted() {
+       if (!this.user.active) {
+           $('#activateModal').modal({backdrop:'static',keyboard:false, show:true})
+       } 
     },
 
     beforeRouteUpdate (to, from, next) {

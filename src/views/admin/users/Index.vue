@@ -73,6 +73,9 @@
                             <button v-if="props.row.role == 'user'" v-on:click="formEditUser(props.row)" class="ml-1 btn btn-secondary btn-sm btn-main" data-toggle="modal" data-target="#pricingModal">
                                 <i class="fas fa-money-bill-alt"></i>
                             </button>
+                            <router-link v-if="props.row.role == 'user'" :to="`/admin/users/${props.row.uid}`" class="ml-1 btn btn-warning btn-sm btn-main">
+                                <i class="fas fa-user"></i>
+                            </router-link>
                         </span>
                         <span v-else>
                             {{props.formattedRow[props.column.field]}}
@@ -657,6 +660,10 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
+
+        goToUser(user){
+            console.log(user);
         }
 
     }
