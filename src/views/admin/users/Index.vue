@@ -551,6 +551,10 @@ export default {
                 let response = await db.collection('users').doc(user.uid).update({ active: user.active }).then(query => {
                     console.log(query);
                 })
+
+                if (user.active) {
+                    await db.collection('notifications').doc(user.token).set({ title: 'Cuenta activada', content: 'Tu cuenta ha sido activada' })
+                }
             } catch (error) {
                 console.log(error)
             }

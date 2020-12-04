@@ -20,10 +20,10 @@
 </style>
 
 <template>
-    <section class="row">
+    <section class="row" :key="componentKey">
         <div class="col-md-12">
             <div class="row mt-4">
-                <div class="col-md-12" v-if="user.active">
+                <div class="col-md-12" v-if="user != null && user.active">
                     <NewOrder :restaurant="restaurant" />
                 </div>
             </div>
@@ -49,7 +49,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, index) in pendingOrders" :key="index">
-                                        <th scope="row">{{ index }}</th>
+                                        <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
@@ -94,7 +94,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, index) in aceptedOrders" :key="index">
-                                        <th scope="row">{{ index }}</th>
+                                        <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
@@ -177,16 +177,13 @@
                                 <div class="col-md-12">
                                     <h5>Nombre</h5>
                                     <p>{{ deliveryMan.name }}</p>
-                                    
-                                    <h5>Email</h5>
-                                    <p>{{ deliveryMan.email }}</p>
 
                                     <h5>Telefono</h5>
                                     <p>{{ deliveryMan.telephone }}</p>
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" v-if="order.process == 1">
                                 <div class="col-md-12">
                                     <button class="btn btn-warning btn-block btn-main" @click="orderCompleteNotification">
                                         <i class="fas fa-comment-dots"></i>
@@ -250,6 +247,7 @@ export default {
 
     data(){
         return{
+            componentKey: 0,
             restaurant: null,
             orders: [],
 
@@ -291,8 +289,10 @@ export default {
     },
 
     mounted() {
-       if (!this.user.active) {
-           $('#activateModal').modal({backdrop:'static',keyboard:false, show:true})
+       if (this.user != null) {
+           if (!this.user.active) {
+                $('#activateModal').modal({backdrop:'static',keyboard:false, show:true})
+            }
        } 
     },
 
@@ -463,7 +463,12 @@ export default {
         },
 
         searchDeliveryMan(order){
+            client.clearCache()
 
+            this.componentKey += 1;
+
+            this.deliveryMans = null
+            this.deliveryManList = []
             this.order = order
 
             console.log(this.restaurant.position.l_)
@@ -476,7 +481,6 @@ export default {
                     filters: `active=1`,
                 }).then(({ hits }) => {
 
-                    console.log('o mai gai comeen');
                     console.log(hits);
                     this.deliveryMans = hits
                     this.deliveryManList = hits
