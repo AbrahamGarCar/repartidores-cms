@@ -16,6 +16,7 @@
                     <div v-else class="navbar-nav ml-auto">
                         <router-link v-if="user.role == 'admin'" class="nav-link" to="/admin/dashboard">Administrador</router-link>
                         <router-link v-if="user.role == 'restaurant'" class="nav-link" to="/dashboard">Dashboard</router-link>
+                        <router-link v-if="user.role == 'restaurant'" class="nav-link" to="/history">Historial</router-link>
                         <div class="nav-item dropdown">
                             
                             <a class="nav-link dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

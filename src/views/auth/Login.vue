@@ -53,11 +53,16 @@ export default {
                 console.log(error)
                 switch (error.code) {
                     case 'auth/user-not-found':
+                        console.log('Revisa tu email y contraseña')
+                        alert('Usuario no encontrado')
+                        break;
                     case 'auth/wrong-password':
                         console.log('Revisa tu email y contraseña')
+                        alert('Contraseña incorrecta')
                         break;
                     default:
                         console.log('Ocurrio un error al validar la informacion')
+                        alert('Ha ocurrido un error, intenta mas tarde')
                         break;
                 }
             }
