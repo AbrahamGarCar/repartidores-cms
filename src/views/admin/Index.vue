@@ -22,7 +22,7 @@
                             <router-link class="nav-link item-link" to="/admin/users">Usuarios</router-link>
                         </li>
                         <li class="list-group-item">
-                            <router-link class="nav-link item-link" to="/admin/restaurants">Restaurantes</router-link>
+                            <router-link class="nav-link item-link" to="/admin/restaurants">Establecimientos</router-link>
                         </li>
                         <li class="list-group-item">
                             <router-link class="nav-link item-link" to="/admin/payments">Pagos</router-link>

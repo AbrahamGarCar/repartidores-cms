@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-md-12">
                 <button type="button" class="btn btn-primary btn-main" data-toggle="modal" data-target="#exampleModal">
-                    Agregar nuevo restaurante
+                    Agregar nuevo establecimiento
                 </button>
             </div>
         </div>
@@ -119,7 +119,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content rounded-0">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Agregar Usuario</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar establecimiento</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -158,6 +158,12 @@
                                         >
                                     </div>
                             </google-places-autocomplete>
+                            <div class="form-group mt-3">
+                                <label for="first">
+                                    <input type="checkbox" v-model="restaurant.firstTime" name="firstTime" id="first">
+                                    Activar promocion
+                                </label>
+                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-primary rounded-0">Registrar</button>
@@ -173,7 +179,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content rounded-0">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editModalLabel">Editar Usuario</h5>
+                        <h5 class="modal-title" id="editModalLabel">Editar establecimiento</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -443,7 +449,7 @@ export default {
                 planActivate: new Date(),
                 planDeactivate: new Date(),
                 plan: null,
-                firstTime: true,
+                firstTime: false,
                 active: false,
             },
 

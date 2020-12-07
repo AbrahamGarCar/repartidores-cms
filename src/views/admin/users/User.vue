@@ -38,6 +38,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="col-md-8">
                         <div class="card rounded-0 mb-3">
                             <div class="card-body">
@@ -255,7 +256,27 @@ export default {
                 refImg.put(this.profileImage, metadata)
                 .then(e => {
                     console.log(e)
-                    this.getResizePath(fotoId)
+
+                    ref.child('users/' + fotoId + '.jpg').getDownloadURL()
+                    .then(async (url) => {
+                        console.log(url)
+
+                        let response = await db.collection('user_photos').doc(this.selectPhoto.id).update({ photo: url })
+                        
+                        
+
+                        this.userPhotos.map((dato) => {
+                            if(dato.id == this.selectPhoto.id){
+                                dato.photo = url;
+                            }
+                            
+                            return dato;
+                        });
+                        this.isLoading = false;
+
+                        $('#exampleModal').modal('hide')
+                    })
+                    // this.getResizePath(fotoId)
                 })
                 .catch(error => console.log(error))
             } catch (error) {
@@ -333,6 +354,25 @@ export default {
                                                     this.userPhotos.push(image)
                                                 })
                                             })
+
+                if (this.userPhotos.length == 0) {
+                    let data = [
+                        {
+                            photo: 'https://lh3.googleusercontent.com/proxy/ZjvzbXtajgnwA9JVd0DxX0TsfJKDLL00Dp8EFN67nYPQLieWKLZpTHVp1pBV4V95G5gaaVC3ZtgcvQYcFXCiXP7CPBeHd_CPQzOSTz7gwDfbS63WxWK--ehNGTJg8YeQ0mFyFfWTw1i4DxVk',
+                            user: this.uid
+                        },
+                        {
+                            photo: 'https://lh3.googleusercontent.com/proxy/ZjvzbXtajgnwA9JVd0DxX0TsfJKDLL00Dp8EFN67nYPQLieWKLZpTHVp1pBV4V95G5gaaVC3ZtgcvQYcFXCiXP7CPBeHd_CPQzOSTz7gwDfbS63WxWK--ehNGTJg8YeQ0mFyFfWTw1i4DxVk',
+                            user: this.uid
+                        }
+                    ]
+
+                    data.forEach(async doc => {
+                        await db.collection('user_photos').doc().set(doc)
+                    })
+
+                    this.getUserImages()
+                }
             } catch (error) {
                 console.log(error);
             }

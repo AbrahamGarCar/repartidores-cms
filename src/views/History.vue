@@ -6,48 +6,49 @@
 </style>
 
 <template>
-    <section class="col-md-12">
-        
-        <div class="row">
-            <div class="col-md-12">
-                <h5>Periodo de facturacion</h5>
-                <input type="date" v-model="dateRange.startDate">
-                <input type="date" v-model="dateRange.endDate">
+    <div class="row mt-5">
+        <section class="col-md-12">
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 style="font-weight: bold;">Historial pedidos</h3>
+                    <input type="date" v-model="dateRange.startDate">
+                    <input type="date" v-model="dateRange.endDate">
 
-                <button class="ml-2 btn btn-sm btn-success btn-main" @click="getPayments">Buscar</button>
+                    <button class="ml-2 btn btn-sm btn-success btn-main" @click="getOrders">Buscar</button>
+                </div>
             </div>
-        </div>
 
-        <hr>
+            <hr>
 
-        <div class="row mt-2">
-            <div class="col-md-12">
-                <table class="table table-bordered">
-                    <thead class="thead-dark">
-                        <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Direccion</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Cantidad</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in payments" :key="index">
-                            <th scope="row">{{ item.name }}</th>
-                            <td>{{ item.direction }}</td>
-                            <td>{{ item.planActivate | date }}</td>
-                            <td>${{ item.amount }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <div class="card rounded-0">
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Direccion</th>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Envio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, index) in orders" :key="index">
+                                        <th scope="row">{{ item.details.name }}</th>
+                                        <td>{{ item.directionOrigin }}</td>
+                                        <td>{{ item.orderDate | date }}</td>
+                                        <td>${{ item.infoDestination.cost }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row mt-2">
-            <div class="col-md-12 text-right">
-                <h5>Total: ${{ totalAmount }}</h5>
-            </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </template>
 
 
@@ -88,27 +89,18 @@ export default {
                 endDate: new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
             },
 
-            payments: [],
+            orders: [],
         }
     },
 
     created() {
-        this.getPayments()
+        this.getOrders()
     },
 
     computed: {
         ...mapState([
             'user'
         ]),
-
-        totalAmount(){
-            if (this.payments.length != 0) {
-
-                var totalAmount = this.payments.reduce((sum, value) => (typeof value.amount == "number" ? sum + value.amount : sum), 0);
-                return totalAmount
-            }
-            
-        }
     },
 
     filters: {
@@ -128,9 +120,9 @@ export default {
 
         },
 
-        async getPayments(){
+        async getOrders(){
             try {
-                this.payments = []
+                this.orders = []
 
                 let date1 = new Date(this.dateRange.startDate)
                 let date2 = new Date(this.dateRange.endDate)
@@ -138,9 +130,10 @@ export default {
                 console.log(date1);
                 console.log(date2);
 
-                let response = await db.collection('payments')
-                                        .where('planActivate', '>=', date1)
-                                        .where('planActivate', '<=', date2)
+                let response = await db.collection('orders')
+                                        .where('orderDate', '>=', date1)
+                                        .where('orderDate', '<=', date2)
+                                        .where('idRestaurant', '==', this.user.restaurant)
                                         .get()
                                         .then(query => {
                                             query.forEach(async doc => {
@@ -160,7 +153,7 @@ export default {
                                                 //     value: restaurant.data()
                                                 // });
 
-                                                this.payments.push(data)
+                                                this.orders.push(data)
                                             });
                                         })
             } catch (error) {

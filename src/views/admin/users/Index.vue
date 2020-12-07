@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-md-12 d-flex">
                 <h2 v-if="dataFilter == 'user'">Estas viendo la seccion de repartidores</h2>
-                <h2 v-if="dataFilter == 'restaurant'">Estas viendo la seccion de restaurantes</h2>
+                <h2 v-if="dataFilter == 'restaurant'">Estas viendo la seccion de gerentes</h2>
                 <h2 v-if="dataFilter == 'admin'">Estas viendo la seccion de administradores</h2>
             </div>
         </div>
@@ -28,8 +28,8 @@
         <div class="row">
             <div class="col-md-12 d-flex">
                 <button class="btn-main btn btn-sm btn-info" @click="dataFilter = 'user'">Repartidores</button>
-                <button class="btn-main btn btn-sm btn-success ml-2" @click="dataFilter = 'restaurant'">Restaurantes</button>
-                <button class="btn-main btn btn-sm btn-danger ml-2" @click="dataFilter = 'admin'">Administrador</button>
+                <button class="btn-main btn btn-sm btn-success ml-2" @click="dataFilter = 'restaurant'">Gerentes</button>
+                <button class="btn-main btn btn-sm btn-danger ml-2" @click="dataFilter = 'admin'">Administradores</button>
             </div>
         </div>
         
@@ -54,7 +54,7 @@
                     :paginate="true"
                     styleClass="table condensed table-bordered table-striped">
                     
-                    <template class="text-center" slot="table-row" slot-scope="props">
+                    <template class="text-center" slot="table-row" slot-scope="props" v-if="dataFilter != 'admin'">
                         <span class="text-center" v-if="props.column.field == 'status'">
                             <i v-if="!props.row.active" style="font-size: 22px; cursor: pointer;" @click="changeStatus(props.row)" class="fas fa-toggle-off"></i>
                             <i v-else style="font-size: 22px; cursor: pointer;" @click="changeStatus(props.row)" class="fas fa-toggle-on"></i>
@@ -420,7 +420,7 @@ export default {
                 role: '',
                 telephone: '',
                 active: false,
-                completeProfile: false,
+                completeProfile: true,
                 terms: false,
                 registerDate: new Date(),
                 INE: false,
@@ -428,6 +428,7 @@ export default {
                 planActivate: new Date(),
                 planDeactivate: new Date(),
                 plan: null,
+                changePassword: true,
 
                 _geoloc: {
                     lat: 0,
@@ -551,6 +552,10 @@ export default {
                 let response = await db.collection('users').doc(user.uid).update({ active: user.active }).then(query => {
                     console.log(query);
                 })
+
+                if (user.active) {
+                    await db.collection('notifications').doc(user.token).set({ title: 'Cuenta activada', content: 'Tu cuenta ha sido activada' })
+                }
             } catch (error) {
                 console.log(error)
             }
@@ -571,6 +576,7 @@ export default {
                     if (result.isConfirmed) {
 
                         let response = await db.collection('temporary').add(this.addUser)
+
                         // await db.collection('information_user').doc(user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
 
                         Swal.fire(

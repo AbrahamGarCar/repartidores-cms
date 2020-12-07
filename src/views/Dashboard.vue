@@ -20,10 +20,10 @@
 </style>
 
 <template>
-    <section class="row">
+    <section class="row" :key="componentKey">
         <div class="col-md-12">
             <div class="row mt-4">
-                <div class="col-md-12" v-if="user.active">
+                <div class="col-md-12" v-if="user != null && user.active">
                     <NewOrder :restaurant="restaurant" />
                 </div>
             </div>
@@ -41,20 +41,24 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Cliente</th>
                                         <th scope="col">Direccion</th>
+                                        <th scope="col">Costo</th>
                                         <th scope="col">Distancia</th>
                                         <th scope="col">Tiempo</th>
-                                        <th scope="col">Costo</th>
+                                        <th scope="col">Envio</th>
+                                        <th scope="col">Total</th>
                                         <th scope="col">Opciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, index) in pendingOrders" :key="index">
-                                        <th scope="row">{{ index }}</th>
+                                        <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
+                                        <td>${{ item.cost }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
                                         <td>${{ item.infoDestination.cost }}</td>
+                                        <td>${{ getTotal(item.cost, item.infoDestination.cost) }}</td>
                                         <td class="text-center">
                                             <button v-if="item.level == 1" class="btn btn-info btn-main" @click="searchDeliveryMan(item)">
                                                 <i class="fas fa-motorcycle"></i>
@@ -86,20 +90,24 @@
                                         <th scope="col">#</th>
                                         <th scope="col">Cliente</th>
                                         <th scope="col">Direccion</th>
+                                        <th scope="col">Costo</th>
                                         <th scope="col">Distancia</th>
                                         <th scope="col">Tiempo</th>
-                                        <th scope="col">Costo</th>
+                                        <th scope="col">Envio</th>
+                                        <th scope="col">Total</th>
                                         <th scope="col">Opciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, index) in aceptedOrders" :key="index">
-                                        <th scope="row">{{ index }}</th>
+                                        <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
+                                        <td>{{ item.cost }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
-                                        <td>$30.00</td>
+                                        <td>${{ item.infoDestination.cost }}</td>
+                                        <td>${{ getTotal(item.cost, item.infoDestination.cost) }}</td>
                                         <td class="text-center">
                                             <button class="btn btn-info btn-main" @click="getDeliveryMan(item)">
                                                 <i class="fas fa-eye"></i>
@@ -177,16 +185,13 @@
                                 <div class="col-md-12">
                                     <h5>Nombre</h5>
                                     <p>{{ deliveryMan.name }}</p>
-                                    
-                                    <h5>Email</h5>
-                                    <p>{{ deliveryMan.email }}</p>
 
                                     <h5>Telefono</h5>
                                     <p>{{ deliveryMan.telephone }}</p>
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" v-if="order.process == 1">
                                 <div class="col-md-12">
                                     <button class="btn btn-warning btn-block btn-main" @click="orderCompleteNotification">
                                         <i class="fas fa-comment-dots"></i>
@@ -214,6 +219,29 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal -->
+            <div class="modal fade" id="passwordModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-0">
+                        <div class="modal-body d-flex justify-content-center align-items-center flex-column">
+                            <h2>Cambiar contraseña</h2>
+                            <p class="text-center">Tu cuenta ha sido activada por primera ves, tienes que cambiar tu contraseña</p>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form @submit.prevent="updatePassword">
+                                        <div class="form-group">
+                                            <label for="password">Nueva contraseña</label>
+                                            <input id="password" type="password" class="form-control" v-model="newPassword">
+                                        </div>
+                                        <button type="submit" class="btn btn-success btn-block">Guardar</button>
+                                        <button class="btn btn-danger btn-block" @click="logOut">Salir</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </template>
@@ -230,7 +258,7 @@ const moment = require('moment-timezone');
 const { DateTime } = require("luxon");
 
 //Firebase
-import { firebase, db, firestore } from '@/firebase'
+import { firebase, db, firestore, auth } from '@/firebase'
 
 //Components
 import NewOrder from '../components/NewOrderComponent'
@@ -241,6 +269,9 @@ const algoliasearch = require('algoliasearch');
 const client = new algoliasearch('YN419Q56L7', 'edf8f9a3011445793f03c30eb44f69ad');
 const index = client.initIndex('users');
 
+//Vuelidate
+import { required, email, minLength } from 'vuelidate/lib/validators'
+
 export default {
     name: 'Dashboard',
 
@@ -250,6 +281,7 @@ export default {
 
     data(){
         return{
+            componentKey: 0,
             restaurant: null,
             orders: [],
 
@@ -258,7 +290,16 @@ export default {
             deliveryMan: null,
             deliveryMans: null,
             deliveryManList: [],
+
+            newPassword: '',
         }
+    },
+
+    validations: {
+        newPassword: {
+            required,
+            minLength: minLength(6)
+        },
     },
 
     filters: {
@@ -291,9 +332,18 @@ export default {
     },
 
     mounted() {
-       if (!this.user.active) {
-           $('#activateModal').modal({backdrop:'static',keyboard:false, show:true})
+       if (this.user != null) {
+            if (!this.user.active) {
+                $('#activateModal').modal({backdrop:'static',keyboard:false, show:true})
+
+                return
+            }
+
+            if (this.user.changePassword) {
+                $('#passwordModal').modal('show')
+            }
        } 
+       
     },
 
     created() {
@@ -306,12 +356,65 @@ export default {
     watch: {
         user(){
             if (this.user != null) {
+                console.log('watcher');
+
+                if (!this.user.active) {
+                    $('#activateModal').modal({backdrop:'static',keyboard:false, show:true})
+
+                    return
+                }
+
+                if (this.user.changePassword) {
+                    $('#passwordModal').modal('show')
+                }
                 this.getRestaurant()
             }    
         },
     },
 
     methods: {
+        getTotal(cost, delivery){
+            return Number(cost) + Number(delivery)
+        },
+
+        async updatePassword(){
+            if(!this.$v.newPassword.required){
+                alert('Ingresa una contraseña')
+
+                return
+            }
+
+            if(!this.$v.newPassword.minLength){
+                alert('Ingresa una contraseña de minimo 6 caracteres')
+
+                return
+            }
+
+            try {
+                var user = firebase.auth().currentUser;
+
+                user.updatePassword(this.newPassword).then(async () => {
+                    await db.collection('users').doc(this.user.uid).update({ changePassword: false })
+                    $('#passwordModal').modal('hide')
+                }).catch((error) => {
+                    console.log(error);
+
+                    if (error.code == 'auth/requires-recent-login') {
+                        alert('Inicia sesion nuevamente')
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
+
+            
+        },
+
+        logOut(){
+            $('#passwordModal').modal('hide')
+            auth.signOut().then(() => this.$router.replace('login'))
+        },
+
         async getRestaurant(){
             try {
                 console.log('binnie')
@@ -423,6 +526,7 @@ export default {
                 this.orders = []
                 let response = await db.collection('orders')
                                         .where('idRestaurant', '==', this.restaurant.id)
+                                        .where('status', 'in', ['PENDIENTE', 'ACEPTADA'])
                                         .onSnapshot(query => {
                                             this.orders = []
 
@@ -463,7 +567,12 @@ export default {
         },
 
         searchDeliveryMan(order){
+            client.clearCache()
 
+            this.componentKey += 1;
+
+            this.deliveryMans = null
+            this.deliveryManList = []
             this.order = order
 
             console.log(this.restaurant.position.l_)
@@ -476,7 +585,6 @@ export default {
                     filters: `active=1`,
                 }).then(({ hits }) => {
 
-                    console.log('o mai gai comeen');
                     console.log(hits);
                     this.deliveryMans = hits
                     this.deliveryManList = hits

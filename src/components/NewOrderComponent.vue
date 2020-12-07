@@ -75,6 +75,13 @@
                                     <textarea class="form-control rounded-0" name="reference" v-model="order.details.reference" id="" cols="30" rows="5"></textarea>
                                     
                                 </div>
+                                <div class="form-group">
+                                    <label for="cost">Costo del pedido</label>
+                                    <input name="cost" v-model="order.cost" class="form-control rounded-0" type="number" min="0">
+                                    <small class="text-danger" v-if="!$v.order.cost.required">Campo requerido</small>
+                                    <small class="text-danger" v-if="!$v.order.cost.decimal">Debe de ser un numero</small>
+                                    <small class="text-danger" v-if="!$v.order.cost.minValue">Debe de ser mayor o igual a 0</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -98,7 +105,7 @@ import { mapState } from 'vuex'
 import { firebase, db, firestore } from '@/firebase'
 
 //Vuelidate
-import { required, minLength, between } from 'vuelidate/lib/validators'
+import { required, minLength, between, decimal, minValue } from 'vuelidate/lib/validators'
 
 //haversine
 const haversine = require('haversine')
@@ -123,6 +130,7 @@ export default {
             order: {
                 directionDestination: '',
                 destination: null,
+                cost: 0,
                 details: {
                     name: '',
                     telephone: '',
@@ -133,6 +141,7 @@ export default {
                 level: 1,
                 orderNumber: 0,
                 process: 1,
+                orderDate: new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
             },
 
             APIKEY: 'AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas',
@@ -150,6 +159,11 @@ export default {
                 name: {
                     required,
                 }
+            },
+            cost: {
+                required,
+                decimal,
+                minValue: minValue(0)
             }
             
         },

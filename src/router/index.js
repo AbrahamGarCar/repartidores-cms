@@ -49,6 +49,16 @@ const router = new VueRouter({
       }
     },
 
+    {
+      path: '/history',
+      name: 'History',
+      component: () => import(/* webpackChunkName: "about" */ '../views/History.vue'),
+      meta: {
+        auth: true,
+        role: 'restaurant',
+      }
+    },
+
     { 
       path: '/admin', 
       component: () => import(/* webpackChunkName: "about" */ '../views/admin/Index.vue'),
