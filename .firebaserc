@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "repartidores-524ed"
+  },
+  "targets": {
+    "repartidores-524ed": {
+      "hosting": {
+        "app": [
+          "fassst-cms"
+        ]
+      }
+    }
+  }
+}

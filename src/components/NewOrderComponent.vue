@@ -15,11 +15,15 @@
 
 <template>
     <section>
-        <button class="btn btn-success" @click="newOrderFormat">Nueva orden</button>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-success rounded-0" @click="newOrderFormat">Nueva orden</button>
+            </div>
+        </div>
 
         <div class="modal fade" id="newOrderFormat" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="newOrderFormatLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content">
+                <div class="modal-content rounded-0">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newOrderFormatLabel">Nueva orden</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -29,12 +33,16 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
+                            <div class="col-md-12 text-right">
+                                <h5>Numero de orden: {{ order.orderNumber }}</h5>
+                            </div>
                             <div class="col-md-12">
                                 <google-places-autocomplete
+                                    class="rounded-0"
                                     @resultChanged="placeDetail => place = placeDetail"
                                     @resultCleared="() => place = null"
                                     >
-                                    <div slot="input" slot-scope="{ context, events, actions }">
+                                    <div class="rounded-0" slot="input" slot-scope="{ context, events, actions }">
                                         <label for="locationInput">Direccion</label>
                                         <input
                                         v-model="context.input"
@@ -55,17 +63,24 @@
                             <div class="col-md-12 mt-3">
                                 <div class="form-group">
                                     <label for="name">Nombre</label>
-                                    <input name="name" v-model="order.details.name" class="form-control" type="text">
+                                    <input name="name" v-model="order.details.name" class="form-control rounded-0" type="text">
                                     <small class="text-danger" v-if="!$v.order.details.name.required">Campo requerido</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="telephone">Telefono</label>
-                                    <input name="telephone" v-model="order.details.telephone" class="form-control" type="text">
+                                    <input name="telephone" v-model="order.details.telephone" class="form-control rounded-0" type="text">
                                 </div>
                                 <div class="form-group">
                                     <label for="reference">Referencia</label>
-                                    <textarea class="form-control" name="reference" v-model="order.details.reference" id="" cols="30" rows="10"></textarea>
+                                    <textarea class="form-control rounded-0" name="reference" v-model="order.details.reference" id="" cols="30" rows="5"></textarea>
                                     
+                                </div>
+                                <div class="form-group">
+                                    <label for="cost">Costo del pedido</label>
+                                    <input name="cost" v-model="order.cost" class="form-control rounded-0" type="number" min="0">
+                                    <small class="text-danger" v-if="!$v.order.cost.required">Campo requerido</small>
+                                    <small class="text-danger" v-if="!$v.order.cost.decimal">Debe de ser un numero</small>
+                                    <small class="text-danger" v-if="!$v.order.cost.minValue">Debe de ser mayor o igual a 0</small>
                                 </div>
                             </div>
                         </div>
@@ -73,8 +88,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" :disabled="$v.$invalid" @click="saveOrder">Guardar</button>
+                    <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary rounded-0" :disabled="$v.$invalid" @click="saveOrder">Guardar</button>
                 </div>
                 </div>
             </div>
@@ -90,7 +105,7 @@ import { mapState } from 'vuex'
 import { firebase, db, firestore } from '@/firebase'
 
 //Vuelidate
-import { required, minLength, between } from 'vuelidate/lib/validators'
+import { required, minLength, between, decimal, minValue } from 'vuelidate/lib/validators'
 
 //haversine
 const haversine = require('haversine')
@@ -115,6 +130,7 @@ export default {
             order: {
                 directionDestination: '',
                 destination: null,
+                cost: 0,
                 details: {
                     name: '',
                     telephone: '',
@@ -123,11 +139,14 @@ export default {
                 status: 'PENDIENTE',
                 idRestaurant: '',
                 level: 1,
+                orderNumber: 0,
+                process: 1,
+                orderDate: new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
             },
 
             APIKEY: 'AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas',
 
-            place: null,
+            place: null
         }
     },
 
@@ -140,6 +159,11 @@ export default {
                 name: {
                     required,
                 }
+            },
+            cost: {
+                required,
+                decimal,
+                minValue: minValue(0)
             }
             
         },
@@ -165,21 +189,44 @@ export default {
     },
 
     methods: {
-        newOrderFormat(){
-            $('#newOrderFormat').modal('show')
+        randomOrderNumber(longitud, caracteres) {
+            longitud = longitud || 6;
+            caracteres = caracteres || "0123456789";
+
+            var cadena = "";
+            var max = caracteres.length-1;
+            for (var i = 0; i<longitud; i++) {
+                cadena += caracteres[ Math.floor(Math.random() * (max+1)) ];
+            }
+            return Number(cadena);
         },
 
-        getAlgolia(){
-            console.log(this.restaurant.position.__)
-            console.log(this.restaurant.position.l_)
+        binnie(args){
+            let km = args
+            let cost = 2
+            let costClient = 5
 
-            index.search('Usuario', {
-                    aroundLatLng: `${this.restaurant.position.l_}, ${this.restaurant.position.__}`,
-                    aroundRadius: 1, // 1km = 1000
-                    filters: `available=1`,
-                }).then(({ hits }) => {
-                    console.log(hits);
-                })
+            let total = 0
+
+            if (km <= 3.4) {
+                total = 25
+
+                return total
+            }else{
+                let diff = km - 3.5
+                let multiplo = parseInt(diff) + 1
+
+                total = (20 + (costClient * multiplo)) + (5 + (cost * multiplo))
+
+                return total
+            }
+
+            return 25
+        },
+
+        newOrderFormat(){
+            this.order.orderNumber = this.randomOrderNumber()
+            $('#newOrderFormat').modal('show')
         },
 
         async getDistance(start, end) {
@@ -198,12 +245,15 @@ export default {
                 if (status !== "OK") {
                     alert("Error was: " + status);
                 } else {
-                    // console.log(Math.round((response.rows[0].elements[0].distance.value)/1000));
+                    let km = (response.rows[0].elements[0].distance.value)/1000
+
+                    let cost = this.binnie(km)
 
                     let infoDestination = {
                         distance: response.rows[0].elements[0].distance.text,
                         duration: response.rows[0].elements[0].duration.text,
-                        value: Math.round((response.rows[0].elements[0].distance.value)/1000)
+                        value: km,
+                        cost: cost,
                     }
 
                     this.insertOrder(infoDestination)
@@ -215,30 +265,48 @@ export default {
 
         async insertOrder(infoDestination){
             try {
-                let conf = confirm('¿Quieres guardar esta orden?')
+                Swal.fire({
+                    title: '¿Quieres guardar esta orden?',
+                    text: "Se registrara el pedido!",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Registrar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
 
-                if (conf) {
-                    this.order.idRestaurant = this.restaurant.id
-                    this.order.directionOrigin = this.restaurant.direction
-                    this.order.origin = this.restaurant.position
-                    this.order.name = this.restaurant.name
-                    this.order.infoDestination = infoDestination
+                        this.order.idRestaurant = this.restaurant.id
+                        this.order.directionOrigin = this.restaurant.direction
+                        this.order.origin = this.restaurant.position
+                        this.order.name = this.restaurant.name
+                        this.order.infoDestination = infoDestination
 
-                    let response = await db.collection('orders').add(this.order)
+                        let response = await db.collection('orders').add(this.order)
 
-                    if (response) {
-                        alert('Orden agregada')
-                        
-                        this.order.directionDestination = ''
-                        this.order.destination = null
-                        this.order.details.name = ''
-                        this.order.details.telephone = ''
-                        this.order.details.reference = ''
+                        if (response) {
+                            
+                            Swal.fire(
+                            'Guardada!',
+                            'Se ha registrado el pedido.',
+                            'success'
+                            )
+                            
+                            this.order.directionDestination = ''
+                            this.order.destination = null
+                            this.order.details.name = ''
+                            this.order.details.telephone = ''
+                            this.order.details.reference = ''
 
-                        this.place = null
-                        $('#newOrderFormat').modal('show')
+                            this.place = null
+                            $('#newOrderFormat').modal('hide')
+                        }
+                       
                     }
-                }
+                })
+
+                
             } catch (error) {
                 console.log(error)
             }
