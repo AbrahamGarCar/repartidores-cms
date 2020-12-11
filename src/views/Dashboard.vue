@@ -479,7 +479,7 @@ export default {
                 // Set each document, as part of the batch
                 users.forEach(document => {
                     let ref = notificationCollection.doc(document.token);
-                    batch.set(ref, { title: 'Nueva orden', content: 'Hay una nueva orden disponible' })
+                    batch.set(ref, { title: 'Nueva orden', content: `Hay una nueva orden disponible, costo: $${this.order.cost}, envío: $${this.order.infoDestination.cost}, total: $${this.getTotal(this.order.cost, this.order.infoDestination.cost)}` })
                 })
 
                 // Commit the entire batch
