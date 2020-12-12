@@ -218,7 +218,7 @@ export default {
 
                 total = (20 + (costClient * multiplo)) + (5 + (cost * multiplo))
 
-                return total
+                return [total, (20 + (costClient * multiplo)), (5 + (cost * multiplo))]
             }
 
             return 25
@@ -253,7 +253,9 @@ export default {
                         distance: response.rows[0].elements[0].distance.text,
                         duration: response.rows[0].elements[0].duration.text,
                         value: km,
-                        cost: cost,
+                        cost: cost[0],
+                        costClient: cost[1],
+                        costRestaurant: cost[2],
                     }
 
                     this.insertOrder(infoDestination)
