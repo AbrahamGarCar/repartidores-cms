@@ -54,7 +54,7 @@
                                         <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
-                                        <td>${{ item.cost }}</td>
+                                        <td>${{ item.cost - item.infoDestination.costRestaurant }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
                                         <td>${{ item.infoDestination.cost }}</td>
@@ -103,7 +103,7 @@
                                         <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
-                                        <td>{{ item.cost }}</td>
+                                        <td>${{ item.cost - item.infoDestination.costRestaurant }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
                                         <td>${{ item.infoDestination.cost }}</td>
@@ -139,19 +139,19 @@
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th scope="col">options</th>
+                                                    <!-- <th scope="col">Opciones</th> -->
                                                     <th scope="col">Nombre</th>
                                                     <th scope="col">Telefono</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="(item, index) in deliveryMans" :key="index">
-                                                    <th scope="row">
+                                                    <!-- <th scope="row">
                                                         <input type="checkbox" :value="item" v-model="deliveryManList">
-                                                    </th>
-                                                    <td>
+                                                    </th> -->
+                                                    <th>
                                                         {{ item.name }}
-                                                    </td>
+                                                    </th>
                                                     <td>
                                                         {{ item.telephone }}
                                                     </td>
@@ -479,7 +479,7 @@ export default {
                 // Set each document, as part of the batch
                 users.forEach(document => {
                     let ref = notificationCollection.doc(document.token);
-                    batch.set(ref, { title: 'Nueva orden', content: 'Hay una nueva orden disponible' })
+                    batch.set(ref, { title: 'Nueva orden', content: `Hay una nueva orden disponible, costo: $${this.order.cost}, envío: $${this.order.infoDestination.cost}, total: $${this.getTotal(this.order.cost, this.order.infoDestination.cost)}` })
                 })
 
                 // Commit the entire batch
