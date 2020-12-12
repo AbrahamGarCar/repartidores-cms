@@ -31,22 +31,31 @@
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Direccion</th>
                                     <th scope="col">Fecha</th>
-                                    <th scope="col">Envio</th>
+                                    <th scope="col">Subsidio</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, index) in orders" :key="index">
                                         <th scope="row">{{ item.details.name }}</th>
-                                        <td>{{ item.directionOrigin }}</td>
+                                        <td>{{ item.directionDestination }}</td>
                                         <td>{{ item.orderDate | date }}</td>
-                                        <td>${{ item.infoDestination.cost }}</td>
+                                        <td class="text-center">${{ item.infoDestination.costRestaurant }}</td>
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <div class="row mt-2">
+                                <div class="col-md-12 text-right">
+                                    <h5>Total: ${{ totalAmount }}</h5>
+                                </div>
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
+                
             </div>
+            
         </section>
     </div>
 </template>
@@ -101,6 +110,15 @@ export default {
         ...mapState([
             'user'
         ]),
+
+        totalAmount(){
+            if (this.orders.length != 0) {
+
+                var totalAmount = this.orders.reduce((sum, value) => (typeof value.infoDestination.costRestaurant == "number" ? sum + value.infoDestination.costRestaurant : sum), 0);
+                return totalAmount
+            }
+            
+        }
     },
 
     filters: {
@@ -131,6 +149,7 @@ export default {
                 console.log(date2);
 
                 let response = await db.collection('orders')
+                                        .where('status', '==', 'FINALIZADO')
                                         .where('orderDate', '>=', date1)
                                         .where('orderDate', '<=', date2)
                                         .where('idRestaurant', '==', this.user.restaurant)

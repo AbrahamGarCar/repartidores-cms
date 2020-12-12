@@ -420,7 +420,7 @@ export default {
                 role: '',
                 telephone: '',
                 active: false,
-                completeProfile: true,
+                completeProfile: false,
                 terms: false,
                 registerDate: new Date(),
                 INE: false,
