@@ -46,6 +46,7 @@
                                         <th scope="col">Tiempo</th>
                                         <th scope="col">Envio</th>
                                         <th scope="col">Total</th>
+                                        <th scope="col">Total a cobrar</th>
                                         <th scope="col">Opciones</th>
                                     </tr>
                                 </thead>
@@ -54,11 +55,12 @@
                                         <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
-                                        <td>${{ item.cost - item.infoDestination.costRestaurant }}</td>
+                                        <td>${{ Number(item.cost) - Number(item.infoDestination.costRestaurant) }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
-                                        <td>${{ item.infoDestination.cost }}</td>
-                                        <td>${{ getTotal(item.cost, item.infoDestination.cost) }}</td>
+                                        <td>${{ item.infoDestination.costClient }}</td>
+                                        <td>${{ getTotal(item) }}</td>
+                                        <td>${{ Number(item.cost) + Number(item.infoDestination.cost) }}</td>
                                         <td class="text-center">
                                             <button v-if="item.level == 1" class="btn btn-info btn-main" @click="searchDeliveryMan(item)">
                                                 <i class="fas fa-motorcycle"></i>
@@ -95,6 +97,7 @@
                                         <th scope="col">Tiempo</th>
                                         <th scope="col">Envio</th>
                                         <th scope="col">Total</th>
+                                        <th scope="col">Total a cobrar</th>
                                         <th scope="col">Opciones</th>
                                     </tr>
                                 </thead>
@@ -103,11 +106,12 @@
                                         <th scope="row">{{ item.orderNumber }}</th>
                                         <td>{{ item.details.name }}</td>
                                         <td>{{ item.directionDestination }}</td>
-                                        <td>${{ item.cost - item.infoDestination.costRestaurant }}</td>
+                                        <td>${{ Number(item.cost) - Number(item.infoDestination.costRestaurant) }}</td>
                                         <td>{{ item.infoDestination.distance }}</td>
                                         <td>{{ item.infoDestination.duration }}</td>
-                                        <td>${{ item.infoDestination.cost }}</td>
-                                        <td>${{ getTotal(item.cost, item.infoDestination.cost) }}</td>
+                                        <td>${{ item.infoDestination.costClient }}</td>
+                                        <td>${{ getTotal(item) }}</td>
+                                        <td>${{ Number(item.cost) + Number(item.infoDestination.cost) }}</td>
                                         <td class="text-center">
                                             <button class="btn btn-info btn-main" @click="getDeliveryMan(item)">
                                                 <i class="fas fa-eye"></i>
@@ -373,8 +377,13 @@ export default {
     },
 
     methods: {
-        getTotal(cost, delivery){
-            return Number(cost) + Number(delivery)
+        getTotal(item){
+            //Costo original: $67
+            //Costo de envio cliente: $25
+            //Costo subisido restaurante: $7
+            //Costo de envio: $32
+            //Total a pagar repartidor: $92
+            return (Number(item.cost) - Number(item.infoDestination.costRestaurant)) + Number(item.infoDestination.cost)
         },
 
         async updatePassword(){
