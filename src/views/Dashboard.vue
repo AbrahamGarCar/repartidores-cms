@@ -46,7 +46,6 @@
                                         <th scope="col">Tiempo</th>
                                         <th scope="col">Envio</th>
                                         <th scope="col">Total</th>
-                                        <th scope="col">Total a cobrar</th>
                                         <th scope="col">Opciones</th>
                                     </tr>
                                 </thead>
@@ -60,7 +59,6 @@
                                         <td>{{ item.infoDestination.duration }}</td>
                                         <td>${{ item.infoDestination.costClient }}</td>
                                         <td>${{ getTotal(item) }}</td>
-                                        <td>${{ Number(item.cost) + Number(item.infoDestination.cost) }}</td>
                                         <td class="text-center">
                                             <button v-if="item.level == 1" class="btn btn-info btn-main" @click="searchDeliveryMan(item)">
                                                 <i class="fas fa-motorcycle"></i>
@@ -97,7 +95,6 @@
                                         <th scope="col">Tiempo</th>
                                         <th scope="col">Envio</th>
                                         <th scope="col">Total</th>
-                                        <th scope="col">Total a cobrar</th>
                                         <th scope="col">Opciones</th>
                                     </tr>
                                 </thead>
@@ -111,7 +108,6 @@
                                         <td>{{ item.infoDestination.duration }}</td>
                                         <td>${{ item.infoDestination.costClient }}</td>
                                         <td>${{ getTotal(item) }}</td>
-                                        <td>${{ Number(item.cost) + Number(item.infoDestination.cost) }}</td>
                                         <td class="text-center">
                                             <button class="btn btn-info btn-main" @click="getDeliveryMan(item)">
                                                 <i class="fas fa-eye"></i>
@@ -488,7 +484,7 @@ export default {
                 // Set each document, as part of the batch
                 users.forEach(document => {
                     let ref = notificationCollection.doc(document.token);
-                    batch.set(ref, { title: 'Nueva orden', content: `Hay una nueva orden disponible, costo: $${this.order.cost}, envío: $${this.order.infoDestination.cost}, total: $${this.getTotal(this.order.cost, this.order.infoDestination.cost)}` })
+                    batch.set(ref, { title: 'Nueva orden', content: `Hay una nueva orden disponible, total: $${(Number(this.order.cost) - Number(this.order.infoDestination.costRestaurant)) + Number(this.order.infoDestination.cost)}, envío: $${this.order.infoDestination.cost}` })
                 })
 
                 // Commit the entire batch
