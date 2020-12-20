@@ -59,14 +59,17 @@
                                         <td>{{ item.infoDestination.duration }}</td>
                                         <td>${{ item.infoDestination.costClient }}</td>
                                         <td>${{ getTotal(item) }}</td>
-                                        <td class="text-center">
+                                        <td class="text-center d-flex">
                                             <button v-if="item.level == 1" class="btn btn-info btn-main" @click="searchDeliveryMan(item)">
                                                 <i class="fas fa-motorcycle"></i>
                                             </button>
-                                            <button v-else class="btn btn-danger rounded-0" @click="searchDeliveryMan(item)">
+                                            <button v-else class="btn btn-warning rounded-0" @click="searchDeliveryMan(item)">
                                                 <div class="spinner-border spinner-border-sm" role="status">
                                                     <span class="sr-only">Loading...</span>
                                                 </div>
+                                            </button>
+                                            <button class="btn btn-danger btn-main ml-1" @click="deleteOrder(item)">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -146,9 +149,9 @@
                                             </thead>
                                             <tbody>
                                                 <tr v-for="(item, index) in deliveryMans" :key="index">
-                                                    <!-- <th scope="row">
+                                                    <th scope="row">
                                                         <input type="checkbox" :value="item" v-model="deliveryManList">
-                                                    </th> -->
+                                                    </th>
                                                     <th>
                                                         {{ item.name }}
                                                     </th>
@@ -373,6 +376,37 @@ export default {
     },
 
     methods: {
+        async deleteOrder(order){
+            try {
+                Swal.fire({
+                    title: 'Cancelar orden?',
+                    text: "Esto cancelara la orden!",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+
+                        await db.collection('orders').doc(order.id).delete()
+
+                        Swal.fire(
+                            'Eliminada!',
+                            'Orden eliminada',
+                            'success'
+                        )
+                    
+                    }
+                    
+                })
+                
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
         getTotal(item){
             //Costo original: $67
             //Costo de envio cliente: $25
