@@ -149,9 +149,9 @@
                                             </thead>
                                             <tbody>
                                                 <tr v-for="(item, index) in deliveryMans" :key="index">
-                                                    <th scope="row">
+                                                    <!-- <th scope="row">
                                                         <input type="checkbox" :value="item" v-model="deliveryManList">
-                                                    </th>
+                                                    </th> -->
                                                     <th>
                                                         {{ item.name }}
                                                     </th>
