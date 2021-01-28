@@ -211,7 +211,7 @@ export default {
             if (km <= 3.4) {
                 total = 25
 
-                return total
+                return [total, 20, 5]
             }else{
                 let diff = km - 3.5
                 let multiplo = parseInt(diff) + 1
@@ -221,7 +221,7 @@ export default {
                 return [total, (20 + (costClient * multiplo)), (5 + (cost * multiplo))]
             }
 
-            return 25
+            return [total, 20, 5]
         },
 
         newOrderFormat(){
