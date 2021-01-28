@@ -67,7 +67,7 @@
                 </div> 
             </div>
         </div>
-        <div class="row mt-4">
+        <div class="row mt-4" v-else>
             <div class="col-md-12 text-center">
                 <h2>No hay ordenes pendientes</h2>
             </div>
