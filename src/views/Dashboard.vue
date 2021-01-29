@@ -217,7 +217,7 @@
                         <div class="modal-body d-flex justify-content-center align-items-center flex-column">
                             <h2>Cuenta suspendida</h2>
                             <p class="text-center">Tu cuenta ha sido suspendida, ponte en contacto al siguiente numero para aclaraciones</p>
-                            <p class="text-center">555-555-555</p>
+                            <p class="text-center">614-126-5003</p>
                         </div>
                     </div>
                 </div>

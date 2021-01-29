@@ -76,6 +76,9 @@
                             <router-link v-if="props.row.role == 'user'" :to="`/admin/users/${props.row.uid}`" class="ml-1 btn btn-warning btn-sm btn-main">
                                 <i class="fas fa-user"></i>
                             </router-link>
+                            <button v-if="props.row.role == 'user' || props.row.role == 'restaurant'" v-on:click="deleteUser(props.row.uid)" class="ml-1 btn btn-danger btn-sm btn-main">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </span>
                         <span v-else>
                             {{props.formattedRow[props.column.field]}}
@@ -139,7 +142,7 @@
                     <div class="modal-body">
                         <form @submit.prevent="saveUser" method="post">
                             <div class="form-group">
-                                <label for="name">Nombre</label>
+                                <label for="name">Nombre*</label>
                                 <input class="form-control rounded-0" type="text" v-model="addUser.name" name="name" required>
                             </div>
                             <div class="form-group">
@@ -151,11 +154,11 @@
                                 <input class="form-control rounded-0" type="text" v-model="addUser.secondLastName" name="lastname">
                             </div>
                             <div class="form-group">
-                                <label for="mail">Correo</label>
+                                <label for="mail">Correo*</label>
                                 <input class="form-control rounded-0" type="email" v-model="addUser.email" name="mail" required>
                             </div>
                             <div class="form-group">
-                                <label for="mail">Contraseña</label>
+                                <label for="mail">Contraseña*</label>
                                 <input class="form-control rounded-0" v-model="addUser.password" name="password" required>
                             </div>
                             <!-- <div class="form-group">
@@ -164,11 +167,11 @@
                             </div> -->
                             
                             <div class="form-group">
-                                <label for="telephone">Telefono</label>
+                                <label for="telephone">Telefono*</label>
                                 <input class="form-control rounded-0" type="number" v-model="addUser.telephone" name="phone" required>
                             </div>
                             <div class="form-group">
-                                <label for="role">Rol</label>
+                                <label for="role">Rol*</label>
                                 <select class="form-control rounded-0" v-model="addUser.role" name="role" required>
                                     <option value="user">Repartidor</option>
                                     <option value="restaurant">Restaurante</option>
@@ -178,7 +181,7 @@
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary rounded-0">Registrar</button>
+                                <button type="submit" class="btn btn-primary rounded-0" :disabled="$v.addUser.$invalid">Registrar</button>
                             </div>
                         </form>
                     </div>
@@ -229,7 +232,7 @@
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary rounded-0">Actualizar</button>
+                                <button type="submit" class="btn btn-primary rounded-0" :disabled="$v.editUser.$invalid">Actualizar</button>
                             </div>
                         </form>
                     </div>
@@ -364,7 +367,7 @@ import { mapState } from 'vuex'
 import { firebase, db, firestore } from '@/firebase'
 
 //Vuelidate
-import { required, minLength, between } from 'vuelidate/lib/validators'
+import { required, email } from 'vuelidate/lib/validators'
 
 //Algolia
 const algoliasearch = require('algoliasearch');
@@ -446,9 +449,44 @@ export default {
         }
     },
 
+    validations: {
+        addUser: {
+            name: {
+                required
+            },
+            email: {
+                email,
+                required
+            },
+            password: {
+                required
+            },
+            telephone: {
+                required
+            },
+            role: {
+                required
+            }
+        },
+
+        editUser: {
+            name: {
+                required
+            },
+            telephone: {
+                required
+            },
+            role: {
+                required
+            }
+        }
+    },
+
     created(){
             this.getUsers()
             this.getRestaurants()
+
+            console.log(new Date(moment().add(50, 'years')));
     },
 
     computed: {
@@ -462,6 +500,33 @@ export default {
     },
 
     methods:{
+        async deleteUser(args){
+            try {
+                Swal.fire({
+                    title: '¿Quieres eliminar este usuario?',
+                    text: "No hay vuelta atras!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await db.collection('users').doc(args).delete()
+                        await db.collection('information_user').doc(args).delete()
+
+                        Swal.fire(
+                        'Eliminado!',
+                        'El usuario ha sido eliminado',
+                        'success'
+                        )
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        },
 
         async activatePlan(plan){
             try {
@@ -575,7 +640,21 @@ export default {
                 }).then(async (result) => {
                     if (result.isConfirmed) {
 
+                        if (this.addUser.role == 'admin') {
+                            this.addUser.active = true
+                            this.addUser.terms = true
+                            this.addUser.INE = true
+                            this.addUser.contract = true
+                            this.addUser.completeProfile = true
+                            this.addUser.planDeactivate = new Date(moment().add(50, 'years'))
+                        }
+
                         let response = await db.collection('temporary').add(this.addUser)
+
+                        this.addUser.name = ''
+                        this.addUser.email = ''
+                        this.addUser.telephone = ''
+                        this.addUser.password = ''
 
                         // await db.collection('information_user').doc(user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
 
