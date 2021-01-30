@@ -269,7 +269,7 @@
                                             <h4 class="my-0 font-weight-normal">Basico</h4>
                                         </div>
                                         <div class="card-body">
-                                            <h1 class="card-title pricing-card-title">$499 <small class="text-muted">/ mo</small></h1>
+                                            <h1 class="card-title pricing-card-title">$499.00 <small class="text-muted">/ mo</small></h1>
                                             <ul class="list-unstyled mt-3 mb-4">
                                                 <li>1 Meses</li>
                                                 <li>Acceso total al sistema</li>
@@ -332,7 +332,7 @@
                                             <h4 class="my-0 font-weight-normal">Basico</h4>
                                         </div>
                                         <div class="card-body">
-                                            <h1 class="card-title pricing-card-title">$499 <small class="text-muted">/ mo</small></h1>
+                                            <h1 class="card-title pricing-card-title">$499.00 <small class="text-muted">/ mo</small></h1>
                                             <ul class="list-unstyled mt-3 mb-4">
                                                 <li>1 Meses</li>
                                                 <li>Acceso total al sistema</li>

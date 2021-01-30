@@ -288,10 +288,25 @@
                             <div v-if="editUser.plan == null" class="card-deck mb-3 text-center">
                                 <div class="card mb-4 box-shadow rounded-0 rounded-0">
                                     <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Pruebas</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$0.00 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>1 Meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$0 en total</small></li>
+                                            
+                                        </ul>
+                                        <button @click="activatePlan(0)" type="button" class="btn btn-lg btn-block btn-outline-danger rounded-0">Activar plan</button>
+                                    </div>
+                                </div>
+                                <div class="card mb-4 box-shadow rounded-0 rounded-0">
+                                    <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Basico</h4>
                                     </div>
                                     <div class="card-body">
-                                        <h1 class="card-title pricing-card-title">$199 <small class="text-muted">/ mo</small></h1>
+                                        <h1 class="card-title pricing-card-title">$199.00 <small class="text-muted">/ mo</small></h1>
                                         <ul class="list-unstyled mt-3 mb-4">
                                             <li>1 Meses</li>
                                             <li>Acceso total al sistema</li>
@@ -318,6 +333,21 @@
                                 </div>
                             </div>
                             <div v-else class="card-deck mb-3 text-center">
+                                <div v-if="editUser.plan == 0" class="card mb-4 box-shadow rounded-0">
+                                    <div class="card-header">
+                                        <h4 class="my-0 font-weight-normal">Pruebas</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <h1 class="card-title pricing-card-title">$0.00 <small class="text-muted">/ mo</small></h1>
+                                        <ul class="list-unstyled mt-3 mb-4">
+                                            <li>1 Meses</li>
+                                            <li>Acceso total al sistema</li>
+                                            <li><small>$0 en total</small></li>
+                                            
+                                        </ul>
+                                        <!-- <button @click="activatePlan(3)" type="button" class="btn btn-lg btn-block btn-outline-primary">Activar plan</button> -->
+                                    </div>
+                                </div>
                                 <div v-if="editUser.plan == 1" class="card mb-4 box-shadow rounded-0">
                                     <div class="card-header">
                                         <h4 class="my-0 font-weight-normal">Basico</h4>
@@ -531,7 +561,14 @@ export default {
         async activatePlan(plan){
             try {
                 let date1 = moment().format();
-                let date2 = moment(date1).add(plan, 'months').calendar();;
+                let date2;
+
+                if (plan == 0) {
+                    date2 = moment(date1).add(1, 'months').calendar();
+                }else{
+                    date2 = moment(date1).add(plan, 'months').calendar();
+                }
+                
                 console.log(new Date(date1));
                 console.log(new Date(date2));
 
@@ -582,7 +619,6 @@ export default {
                     id: user.uid,
                     role: 'user',
                     name: user.name,
-                    direction: user.direction,
                     email: user.email,
                     telephone: user.telephone,
                     plan: data.plan,
@@ -591,7 +627,12 @@ export default {
                     planDeactivate: data.planDeactivate,
                 }
 
-                if (data.plan == 2) {
+                if (user.direction)
+                    payment.direction = user.direction
+                    
+                if(data.plan == 0){
+                    payment.amount = 0
+                }else if (data.plan == 2) {
                     payment.amount = 499
                 }else if(data.plan == 1){
                     payment.amount = 499
