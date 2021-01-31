@@ -45,7 +45,7 @@
                         mode: 'pages'
                     }"
                     :columns="columns"
-                    :rows="restaurants"
+                    :rows="restaurantsFilter"
                     :lineNumbers="true"
                     :defaultSortBy="{field: 'name', type: 'asec'}"
                     :globalSearch="true"
@@ -69,48 +69,15 @@
                             <button v-on:click="formEditUser(props.row)" class="ml-1 btn btn-secondary btn-sm btn-main" data-toggle="modal" data-target="#pricingModal">
                                 <i class="fas fa-money-bill-alt"></i>
                             </button>
+                            <button v-on:click="deleteRestaurant(props.row.id)" class="ml-1 btn btn-danger btn-sm btn-main">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </span>
                         <span v-else>
                             {{props.formattedRow[props.column.field]}}
                         </span>
                     </template>
                 </vue-good-table>
-                <!-- <table class="table table-bordered">
-                    <thead class="thead-dark">
-                        <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Correo</th>
-                        <th scope="col">Telefono</th>
-                        <th scope="col">Estatus</th>
-                        <th scope="col">Plus</th>
-                        <th scope="col">Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in restaurants" :key="index">
-                        <th scope="row">{{ item.name }}</th>
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.telephone }}</td>
-                        <td class="text-center">
-                            <i v-if="!item.active" style="font-size: 22px; cursor: pointer;" @click="changeStatus(item)" class="fas fa-toggle-off"></i>
-                            <i v-else style="font-size: 22px; cursor: pointer;" @click="changeStatus(item)" class="fas fa-toggle-on"></i>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge badge-pill badge-success" v-if="item.plan">OK</span>
-                            <span class="badge badge-pill badge-danger" v-else>NO</span>
-                        </td>
-                        <td class="text-center">
-                            <button v-on:click="formEditUser(item)" class="btn btn-info btn-sm btn-main" data-toggle="modal" data-target="#editModal">
-                                <i class="fas fa-edit"></i>
-                            </button>
-
-                            <button v-on:click="formEditUser(item)" class="ml-1 btn btn-secondary btn-sm btn-main" data-toggle="modal" data-target="#pricingModal">
-                                <i class="fas fa-money-bill-alt"></i>
-                            </button>
-                        </td>
-                        </tr>
-                    </tbody>
-                </table> -->
             </div>
         </div>
 
@@ -166,7 +133,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary rounded-0">Registrar</button>
+                                <button type="submit" class="btn btn-primary rounded-0" :disabled="$v.restaurant.$invalid">Registrar</button>
                             </div>
                         </form>
                     </div>
@@ -221,7 +188,7 @@
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary rounded-0">Actualizar</button>
+                                <button type="submit" class="btn btn-primary rounded-0" :disabled="$v.editRestaurant.$invalid">Actualizar</button>
                             </div>
                         </form>
                     </div>
@@ -390,17 +357,14 @@ import { mapState } from 'vuex'
 //Firebase
 import { firebase, db, firestore } from '@/firebase'
 
-//Vuelidate
-import { required, minLength, between } from 'vuelidate/lib/validators'
-
 //Algolia
 const algoliasearch = require('algoliasearch');
 
 const client = new algoliasearch('YN419Q56L7', 'edf8f9a3011445793f03c30eb44f69ad');
 const index = client.initIndex('restaurants');
 
-//Luxon
-const { DateTime } = require("luxon");
+//Vuelidate
+import { required, email } from 'vuelidate/lib/validators'
 
 //Moment
 const moment = require('moment-timezone');
@@ -445,7 +409,10 @@ export default {
                 telephone: '',
                 direction: '',
                 position: null,
-
+                _geoloc: {
+                    lat: 0,
+                    lng: 0
+                },
                 planActivate: new Date(),
                 planDeactivate: new Date(),
                 plan: null,
@@ -461,6 +428,37 @@ export default {
         }
     },
 
+    validations: {
+        restaurant: {
+            name: {
+                required
+            },
+            email: {
+                email,
+                required
+            },
+            telephone: {
+                required
+            },
+            direction: {
+                required
+            }
+        },
+
+        editRestaurant: {
+            name: {
+                required
+            },
+            email: {
+                email,
+                required
+            },
+            telephone: {
+                required
+            },
+        }
+    },
+
     watch: {
         place(){
             if (this.place != null) {
@@ -468,11 +466,23 @@ export default {
                 if (this.editRestaurant != null) {
                     this.editRestaurant.direction = this.place.formatted_address
                     this.editRestaurant.position = new firebase.firestore.GeoPoint(this.place.geometry.location.lat(), this.place.geometry.location.lng())
+
+                    this.editRestaurant._geoloc.lat = this.place.geometry.location.lat()
+                    this.editRestaurant._geoloc.lng = this.place.geometry.location.lng()
                 }
 
                 this.restaurant.direction = this.place.formatted_address
                 this.restaurant.position = new firebase.firestore.GeoPoint(this.place.geometry.location.lat(), this.place.geometry.location.lng())
+
+                this.restaurant._geoloc.lat = this.place.geometry.location.lat()
+                this.restaurant._geoloc.lng = this.place.geometry.location.lng()
             }    
+        }
+    },
+
+    computed: {
+        restaurantsFilter(){
+            return this.restaurants.filter(doc => doc.name)
         }
     },
 
@@ -527,6 +537,33 @@ export default {
 
             } catch (error) {
                 console.log(error)
+            }
+        },
+
+        async deleteRestaurant(args){
+            try {
+                Swal.fire({
+                    title: '¿Quieres eliminar este establecimiento?',
+                    text: "No hay vuelta atras!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar',
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await db.collection('restaurants').doc(args).delete()
+
+                        Swal.fire(
+                        'Eliminado!',
+                        'El establecimiento ha sido eliminado',
+                        'success'
+                        )
+                    }
+                })
+            } catch (error) {
+                console.log(error);
             }
         },
 
