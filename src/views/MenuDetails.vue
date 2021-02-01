@@ -324,6 +324,7 @@ export default {
         },
 
         async saveMenu(){
+            
             try {
                 Swal.fire({
                     title: '¿Quieres guardar este menu?',
@@ -336,7 +337,8 @@ export default {
                     cancelButtonText: 'Cancelar',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-
+                        this.isLoading = true
+                        
                         this.food.idMenu = this.data.id
                         this.food.idRestaurant = this.data.idRestaurant
 
@@ -347,7 +349,10 @@ export default {
                         let response = await db.collection('foods').add(this.food)
 
                         if (response) {
-                                    
+                            this.isLoading = false;  
+                            
+                            $('#newFoodFormat').modal('hide')
+
                             Swal.fire(
                             'Guardado!',
                             'Se ha registrado el menu.',
@@ -358,9 +363,9 @@ export default {
                             this.food.description = ''
                             this.food.cost = 0
 
-                            $('#newFoodFormat').modal('hide')
+                           
 
-                            this.isLoading = false;
+                            
                         }
                        
                     }

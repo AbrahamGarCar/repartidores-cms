@@ -37,7 +37,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary rounded-0" :disabled="$v.$invalid" @click="saveMenu">Guardar</button>
+                            <button type="button" class="btn btn-primary rounded-0" :disabled="$v.menu.$invalid" @click="saveMenu">Guardar</button>
                         </div>
                     </div>
                 </div>

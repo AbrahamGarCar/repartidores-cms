@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@johmun/vue-tags-input": "^2.1.0",
     "algolia": "0.0.0",
     "algoliasearch": "^4.5.1",
     "axios": "^0.21.0",

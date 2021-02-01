@@ -21,6 +21,10 @@
 
 <template>
     <section class="col-md-12">
+        <loading :active.sync="isLoading" 
+                :can-cancel="false" 
+                :on-cancel="onCancel"
+                :is-full-page="fullPage"></loading>
         <!-- boton para agregar usuario -->
         <div class="row">
             <div class="col-md-12">
@@ -105,6 +109,16 @@
                                 <label for="telephone">Telefono</label>
                                 <input class="form-control rounded-0" type="number" v-model="restaurant.telephone" name="phone" required>
                             </div>
+                            <div class="form-group">
+                                <label for="">Categorias</label>
+                                <vue-tags-input
+                                    v-model="tag"
+                                    :tags="restaurant.tags"
+                                    :autocomplete-items="filteredItems"
+                                    @before-adding-tag="checkTag"
+                                    @tags-changed="newTags => restaurant.tags = newTags"
+                                />
+                            </div>
                             <google-places-autocomplete
                                     @resultChanged="placeDetail => place = placeDetail"
                                     @resultCleared="() => place = null"
@@ -125,6 +139,10 @@
                                         >
                                     </div>
                             </google-places-autocomplete>
+                            <div class="form-group mt-4">
+                                <label for="cost">Imagen</label>
+                                <input type="file" @change="getImage($event)" accept="image/">
+                            </div>
                             <div class="form-group mt-3">
                                 <label for="first">
                                     <input type="checkbox" v-model="restaurant.firstTime" name="firstTime" id="first">
@@ -165,6 +183,16 @@
                                 <label for="telephone">Telefono</label>
                                 <input class="form-control rounded-0" type="number" v-model="editRestaurant.telephone" name="phone" required>
                             </div>
+                            <div class="form-group">
+                                <label for="">Categorias</label>
+                                <vue-tags-input
+                                    v-model="tag"
+                                    :tags="editRestaurant.tags"
+                                    :autocomplete-items="filteredItems"
+                                    @before-adding-tag="checkTag"
+                                    @tags-changed="newTags => editRestaurant.tags = newTags"
+                                />
+                            </div>
                             <google-places-autocomplete
                                     @resultChanged="placeDetail => place = placeDetail"
                                     @resultCleared="() => place = null"
@@ -185,6 +213,10 @@
                                         >
                                     </div>
                             </google-places-autocomplete>
+                            <div class="form-group mt-4">
+                                <label for="cost">Imagen</label>
+                                <input type="file" @change="getImage($event)" accept="image/">
+                            </div>
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary rounded-0" data-dismiss="modal">Cancelar</button>
@@ -355,7 +387,9 @@
 import { mapState } from 'vuex'
 
 //Firebase
-import { firebase, db, firestore } from '@/firebase'
+import { firebase, db, firestore, storage } from '@/firebase'
+
+const ref = storage.ref()
 
 //Algolia
 const algoliasearch = require('algoliasearch');
@@ -369,7 +403,20 @@ import { required, email } from 'vuelidate/lib/validators'
 //Moment
 const moment = require('moment-timezone');
 
+// Import component
+import Loading from 'vue-loading-overlay';
+
+// Import stylesheet
+import 'vue-loading-overlay/dist/vue-loading.css';
+
+import VueTagsInput from '@johmun/vue-tags-input';
+
 export default {
+    components: {
+        Loading,
+        VueTagsInput
+    },
+
     data(){
         return{
             columns: [
@@ -402,13 +449,14 @@ export default {
                 },
 
             ],
-
+            tag: '',
             restaurant: {
                 name: '',
                 email: '',
                 telephone: '',
                 direction: '',
                 position: null,
+                tags: [],
                 _geoloc: {
                     lat: 0,
                     lng: 0
@@ -424,6 +472,57 @@ export default {
             restaurants: [],
 
             editRestaurant: null,
+
+            selectPhoto: null,
+
+            foodImage: null,
+
+            isLoading: false,
+            fullPage: true,
+
+            autocompleteItems: [{
+                text: 'Tacos',
+            }, {
+                text: 'Hamburguesas',
+            }, {
+                text: 'Mexicana',
+            }, {
+                text: 'Postres',
+            }, {
+                text: 'Carne',
+            }, {
+                text: 'Pizza',
+            }, {
+                text: 'Bebidas',
+            }, {
+                text: 'Alitas & Pollo',
+            }, {
+                text: 'Asiática',
+            }, {
+                text: 'Mariscos',
+            }, {
+                text: 'Americana',
+            }, {
+                text: 'Café',
+            }, {
+                text: 'Alcohol',
+            }, {
+                text: 'Donas',
+            }, {
+                text: 'Panadería',
+            }, {
+                text: 'Tortas',
+            }, {
+                text: 'Sándwiches',
+            }, {
+                text: 'Sushi',
+            }, {
+                text: 'Italiana',
+            }, {
+                text: 'Saludable',
+            }, {
+                text: 'Snacks',
+            }],
 
         }
     },
@@ -483,7 +582,13 @@ export default {
     computed: {
         restaurantsFilter(){
             return this.restaurants.filter(doc => doc.name)
-        }
+        },
+
+        filteredItems() {
+            return this.autocompleteItems.filter(i => {
+                return i.text.toLowerCase().indexOf(this.tag.toLowerCase()) !== -1;
+            });
+        },
     },
 
     created(){
@@ -491,6 +596,69 @@ export default {
     },
 
     methods:{
+        onCancel() {
+            console.log('User cancelled the loader.')
+        },
+
+        checkTag(obj) {
+            console.log(obj);
+            let find = this.autocompleteItems.find(element => element.text == obj.tag.text)
+            if (this.editRestaurant != null)
+                if (!find || this.editRestaurant.tags.length >= 2) alert('Invalido');
+                else obj.addTag();
+            
+            else if (!find || this.restaurant.tags.length >= 2) alert('Invalido');
+            
+            else obj.addTag();
+        },
+
+        getImage(e){
+            this.foodImage = e.target.files[0]
+            console.log(this.foodImage);
+        },
+
+        //Generar UUID
+        generateUUID(){
+            var h = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
+            var k = ['x','x','x','x','x','x','x','x','-','x','x','x','x','-','4','x','x','x','-','y','x','x','x','-','x','x','x','x','x','x','x','x','x','x','x','x'];
+            var u = '',i=0,rb=Math.random()*0xffffffff|0;
+            while(i++<36) {
+                var c=k[i-1],r=rb&0xf,v=c=='x'?r:(r&0x3|0x8);
+                u+=(c=='-'||c=='4')?c:h[v];rb=i%8==0?Math.random()*0xffffffff|0:rb>>4
+            }
+            return u
+        },
+
+        async uploadImage(){
+            // this.isLoading = true;
+
+            try {
+                let metadata = {
+                    contentType: "image/jpeg",
+                    contentLanguage: "es",
+                }
+
+                let fotoId = this.generateUUID()
+
+                const refImg = ref.child('foods/' + fotoId + '.jpg')
+                return refImg.put(this.foodImage, metadata)
+                .then(e => {
+                    console.log(e)
+
+                    return ref.child('foods/' + fotoId + '.jpg').getDownloadURL()
+                    .then(async (url) => {
+
+                        return url                        
+                        
+                    })
+                    // this.getResizePath(fotoId)
+                })
+                .catch(error => console.log(error))
+            } catch (error) {
+                console.log(error);
+                this.isLoading = false;
+            }
+        },
 
         async activatePlan(plan){
             try {
@@ -647,6 +815,7 @@ export default {
         },
 
         async saveRestaurant(){
+            this.isLoading = true;
             try {
 
                 Swal.fire({
@@ -660,6 +829,11 @@ export default {
                     cancelButtonText: 'Cancelar',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
+
+                        let url = await this.uploadImage()
+
+                        this.restaurant.image = url
+
                         let response = await db.collection('restaurants').add(this.restaurant)
                                                 .then(async docRef => {
                                                     console.log("Document written with ID: ", docRef.id)
@@ -667,6 +841,10 @@ export default {
                                                     await db.collection('restaurants').doc(docRef.id)
                                                                                         .update({ id: docRef.id })
                                                 })
+
+                        this.isLoading = false;
+
+                        $('#exampleModal').modal('hide')
 
                         Swal.fire(
                             'Guardado!',
@@ -710,10 +888,25 @@ export default {
         },
         
         async saveUserEdit(){
+            this.isLoading = true
+
             try {
+                if (this.foodImage == null) {
+                    this.editRestaurant.image = this.editRestaurant.image
+                }else{
+                    let url = await this.uploadImage()
+
+                    this.foodImage = null
+
+                    this.editRestaurant.image = url
+                }
+
                 let response = await db.collection('restaurants').doc(this.editRestaurant.id)
                                         .update(this.editRestaurant)
                                         .then(query => {
+                                            this.isLoading = false
+                                            $('#editModal').modal('hide')
+
                                             Swal.fire(
                                                 'Restaurante actualizado',
                                                 'El restaurante ha sido actualizado',
