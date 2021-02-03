@@ -271,8 +271,8 @@ export default {
                             'success'
                             )
                         
-                            this.order.name = ''
-                            this.order.description = ''
+                            this.menu.name = ''
+                            this.menu.description = ''
 
                             $('#newMenuFormat').modal('hide')
                         }

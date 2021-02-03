@@ -342,7 +342,13 @@ export default {
                         this.food.idMenu = this.data.id
                         this.food.idRestaurant = this.data.idRestaurant
 
-                        let url = await this.uploadImage()
+                        let url = null
+                        if (this.foodImage == null) {
+                            url = 'https://cdn.browshot.com/static/images/not-found.png'
+                        }else{
+                            url = await this.uploadImage()
+                            this.foodImage = null
+                        }
 
                         this.food.image = url
 

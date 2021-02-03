@@ -539,6 +539,9 @@ export default {
             telephone: {
                 required
             },
+            tags: {
+                required
+            },
             direction: {
                 required
             }
@@ -815,7 +818,6 @@ export default {
         },
 
         async saveRestaurant(){
-            this.isLoading = true;
             try {
 
                 Swal.fire({
@@ -829,8 +831,14 @@ export default {
                     cancelButtonText: 'Cancelar',
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-
-                        let url = await this.uploadImage()
+                        this.isLoading = true;
+                        let url = null
+                        if (this.foodImage == null) {
+                            url = 'https://cdn.browshot.com/static/images/not-found.png'
+                        }else{
+                            url = await this.uploadImage()
+                            this.foodImage = null
+                        }
 
                         this.restaurant.image = url
 
