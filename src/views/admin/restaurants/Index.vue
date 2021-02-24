@@ -241,7 +241,6 @@
                     <div class="modal-body" v-if="editRestaurant != null">
                         <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
                             <h1 class="display-4">Suscripción</h1>
-                            <p class="lead">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Architecto obcaecati quam vel sit, aliquam, amet culpa cupiditate laudantium consequatur explicabo, doloribus repellat? Debitis fuga, architecto ratione eveniet nobis sit repellat.</p>
                         </div>
                         <div class="container">
                             <div v-if="editRestaurant.firstTime" class="card-deck mb-3 text-center">
