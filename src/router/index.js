@@ -16,7 +16,8 @@ const router = new VueRouter({
   
     {
       path: '/',
-      redirect: '/login',
+      name: 'Offline',
+      component: () => import(/* webpackChunkName: "login" */ '../views/Offline.vue')
     },
   
     {
